@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-//	"github.com/gorilla/websocket"
+	//"github.com/gorilla/websocket"
 	"net/http"
 	"net/url"
-	"encoding/json"
-	"strings"
-	//"io/ioutil"
+	//"encoding/json"
+	//"strings"
+	"io/ioutil"
 )
 
 
@@ -18,11 +18,12 @@ func StartRTM(token string) (error) {
 	}
 	defer resp.Body.Close()
 
+
+	respout,_:=ioutil.ReadAll(resp.Body)
+	fmt.Printf("%s",string(respout))
+
+/*
 	authResp:=new(AuthResponse)
-
-	//respout,_:=ioutil.ReadAll(resp.Body)
-	//fmt.Printf("%s",string(respout))
-
 	dec:=json.NewDecoder(resp.Body)
 	err=dec.Decode(authResp)
 	if err != nil {
@@ -33,6 +34,7 @@ func StartRTM(token string) (error) {
 	authResp.Url = strings.Join(splitUrl, "/")
 
 	fmt.Println(authResp)
+*/
 	return nil
 }
 
