@@ -18,7 +18,7 @@ type Icon struct {
 	ImageDefault bool   `json:"image_default,omitempty"`
 }
 
-type Latest struct {
+type LatestChannel struct {
 	BotID    string `json:"bot_id,omitempty"`
 	Subtype  string `json:"subtype,omitempty"`
 	Text     string `json:"text,omitempty"`
@@ -48,7 +48,7 @@ type Channel struct {
 	IsGeneral   bool     `json:"is_general,omitempty"`
 	IsMember    bool     `json:"is_member,omitempty"`
 	LastRead    string   `json:"last_read,omitempty"`
-	Latest      Latest   `json:"latest,omitempty"`
+	Latest      LatestChannel   `json:"latest,omitempty"`
 	Members     []string `json:"members,omitempty"`
 	Name        string   `json:"name,omitempty"`
 	Purpose     Purpose  `json:"purpose,omitempty"`
@@ -57,7 +57,7 @@ type Channel struct {
 }
 
 type IM struct {
-	Latest      Latest  `json:"latest,omitempty"`
+	Latest      LatestIM  `json:"latest,omitempty"`
 	Created     float64 `json:"created,omitempty"`
 	ID          string  `json:"id,omitempty"`
 	IsIm        bool    `json:"is_im,omitempty"`
@@ -67,7 +67,7 @@ type IM struct {
 	User        string  `json:"user,omitempty"`
 }
 
-type Latest struct {
+type LatestIM struct {
 	Text string `json:"text,omitempty"`
 	Ts   string `json:"ts,omitempty"`
 	Type string `json:"type,omitempty"`
@@ -251,7 +251,7 @@ type UserProfile struct {
 	RealNameNormalized string `json:"real_name_normalized,omitempty"`
 }
 
-type AuthReply struct {
+type AuthResponse struct {
 	Bots          []Bot         `json:"bots,omitempty"`
 	CacheVersion  string        `json:"cache_version,omitempty"`
 	Channels      []Channel     `json:"channels,omitempty"`

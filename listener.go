@@ -5,9 +5,9 @@ import (
 	//"github.com/gorilla/websocket"
 	"net/http"
 	"net/url"
-	//"encoding/json"
-	//"strings"
-	"io/ioutil"
+	"encoding/json"
+	"strings"
+	//"io/ioutil"
 )
 
 
@@ -19,22 +19,22 @@ func StartRTM(token string) (error) {
 	defer resp.Body.Close()
 
 
-	respout,_:=ioutil.ReadAll(resp.Body)
-	fmt.Printf("%s",string(respout))
+//	respout,_:=ioutil.ReadAll(resp.Body)
+//	fmt.Printf("%s",string(respout))
 
-/*
+
 	authResp:=new(AuthResponse)
 	dec:=json.NewDecoder(resp.Body)
 	err=dec.Decode(authResp)
 	if err != nil {
 		return fmt.Errorf("Couldn't decode json. ERR: %v", err)
 	}
-	splitUrl := strings.Split(authResp.Url, "/")
+	splitUrl := strings.Split(authResp.URL, "/")
 	splitUrl[2] = splitUrl[2] + ":443"
-	authResp.Url = strings.Join(splitUrl, "/")
+	authResp.URL = strings.Join(splitUrl, "/")
 
 	fmt.Println(authResp)
-*/
+
 	return nil
 }
 
