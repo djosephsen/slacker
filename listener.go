@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"encoding/json"
 	"strings"
-	//"io/ioutil"
+//	"io/ioutil"
 )
 
 
@@ -33,7 +33,7 @@ func StartRTM(token string) (error) {
 	splitUrl[2] = splitUrl[2] + ":443"
 	authResp.URL = strings.Join(splitUrl, "/")
 
-	fmt.Println(authResp)
+	fmt.Println(authResp.URL)
 
 	return nil
 }
