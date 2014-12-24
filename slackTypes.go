@@ -237,3 +237,12 @@ type AuthResponse struct {
 		TzOffset float64     `json:"tz_offset"`
 	} `json:"users"`
 }
+
+type Event struct {
+	Id      int    `json:"id"`
+	Type    string `json:"type"`
+	Channel string `json:"channel"`
+	Text    string `json:"text"`
+	User    string `json:"user"`
+	Ts      string `json:"ts,omitempty"`
+}
