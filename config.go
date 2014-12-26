@@ -2,7 +2,6 @@ import (
    "fmt"
    "github.com/ccding/go-logging/logging"
    "github.com/danryan/env"
-   "net/http"
    "os"
    "strings"
    "time"
@@ -27,7 +26,7 @@ func newLogger() *logging.Logger {
    timeFormat := time.RFC3339
    levelStr := strings.ToUpper(Config.LogLevel)
    level := logging.GetLevelValue(levelStr)
-   logger, _ := logging.WriterLogger("hal", level, format, timeFormat, os.Stdout, true)
+   logger, _ := logging.WriterLogger("slacker", level, format, timeFormat, os.Stdout, true)
    return logger
 }
 

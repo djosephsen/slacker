@@ -5,8 +5,23 @@ import (
 )
 
 func main(){
-	withThisToken:=`xoxp-3057259082-3057259092-3247338018-9890ee`
-  if socket,err:=getMeASocket(withThisToken); err != nil{
-      fmt.Println(err)
+	
+	bot:=new(Bot)
+	bot.MID = 0
+	bot.Conf = newConfig()
+	bot.Logger = newLogger()
+
+  if bot.Ws,err:=getMeASocket(bot.Conf.Token); err != nil{
+      bot.Logger.Error(err)
 	}
+	
+	if err = initHooks(bot); err !=nil{
+      bot.Logger.Error(err)
+	}
+
+	//run startup hooks
+	for h:=range bot.
+
+	//in/out loop
+
 }
