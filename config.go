@@ -13,6 +13,10 @@ type config struct {
    StoreName   string `env:"key=SLACKER_BRAIN default=memory"`
    LogLevel    string `env:"key=SLACKER_LOG_LEVEL default=info"`
    Token 	   string `env:"key=SLACKER_TOKEN default=info"`
+   PreFilters        *[]PreHandlerFilter
+   MessageHandlers   *[]MessageHandler
+   EventHandlers     *[]GenericEventHandler
+   PostFilters       *[]PostHandlerFilter
 }
 
 func newConfig() *config {
