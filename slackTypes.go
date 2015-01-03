@@ -239,10 +239,11 @@ type AuthResponse struct {
 }
 
 type Event struct {
-	Id      int    `json:"id"`
+	ID      int32    `json:"id"`
 	Type    string `json:"type"`
 	Channel string `json:"channel"`
 	Text    string `json:"text"`
 	User    string `json:"user"`
 	Ts      string `json:"ts,omitempty"`
+	Bot	  *Bot
 }
