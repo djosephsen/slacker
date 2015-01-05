@@ -30,6 +30,7 @@ type ReadThread struct{
 func (r *ReadThread) Start(b *Bot){
 	r.Bot=b
 	e := Event{}
+	Logger.Debug(`Read-Thread Started`)
 	for {
 		b.Ws.ReadJSON(&e)
 		if (e != Event{}) { // if the event isn't empty
@@ -48,6 +49,7 @@ type WriteThread struct{
 
 func (w *WriteThread) Start(b *Bot){
 	w.Bot=b
+	Logger.Debug(`Write-Thread Started`)
 	for {
 		e := <-w.Chan
 		e.ID = b.NextMID()
@@ -59,7 +61,7 @@ func (w *WriteThread) Start(b *Bot){
 		}
 }
 
-//TODO: Make this threadsafe
+//probably need to make this threadsafe
 func (b *Bot) NextMID() int32{
 	b.MID += 1
 	Logger.Debug(`incrementing MID to `, b.MID)

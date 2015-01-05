@@ -7,11 +7,12 @@ import (
 	"net/url"
 	"encoding/json"
 	"strings"
+	"io/ioutil"
 )
 
 // Given an API token, get me a web socket from slack pleasthnx
 func getMeASocket(token string) (*websocket.Conn, error) {
-	rtmURL:=`https://slack.com/api/rtm.start"`
+	rtmURL:=`https://slack.com/api/rtm.start`
 	resp, err := http.PostForm(rtmURL, url.Values{"token": {token}}) 
 	if err != nil{
 		return new(websocket.Conn), fmt.Errorf("no dice with rtm.start: %v", err)
@@ -22,6 +23,8 @@ func getMeASocket(token string) (*websocket.Conn, error) {
 	dec:=json.NewDecoder(resp.Body)
 	err=dec.Decode(authResp)
 	if err != nil {
+		out,_ := ioutil.ReadAll(resp.Body)
+		fmt.Printf(`%s`,string(out))
 		return new(websocket.Conn), fmt.Errorf("Couldn't decode json. ERR: %v", err)
 	}
 	wsURL := strings.Split(authResp.URL, "/")

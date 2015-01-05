@@ -15,6 +15,7 @@ type Broker struct{
 
 func (broker *Broker) Start(bot *Bot){
 	broker.Bot=bot	
+	Logger.Debug(`Broker Started`)
 	for {
       select {
       	case event := <-bot.ReadThread.Chan:

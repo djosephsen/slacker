@@ -22,6 +22,7 @@ func main(){
   bot.Ws, err = getMeASocket(bot.Config.Token) 
   if err != nil{
       Logger.Error(err)
+		return
 	}
 	
 	go bot.WriteThread.Start(bot)
