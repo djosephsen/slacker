@@ -11,8 +11,6 @@ func main(){
 	bot := new(sl.Bot)
 	err := bot.Init()
 
-   sl.Logger.Debug(`Good Morning! lets see here...`)
-	
 	go bot.WriteThread.Start(bot)
 	go bot.ReadThread.Start(bot)
 	go bot.Broker.Start(bot)

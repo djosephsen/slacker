@@ -107,10 +107,12 @@ func (b *Bot) Register(things ...interface{}){
 		case PreHandlerFilter:
 			*b.Broker.PreFilters=append(*b.Broker.PreFilters, thing.(PreHandlerFilter))
 		case StartupHook:
+			suHook:=thing.(StartupHook)
+			Logger.Debug(`registered StartupHook: `,suHook.Name)
 			*b.StartupHooks=append(*b.StartupHooks, thing.(StartupHook))
 		case ShutdownHook:
 			sdHook:=thing.(ShutdownHook)
-			Logger.Debug(`registered shutdownhook: `,sdHook.Name)
+			Logger.Debug(`registered ShutdownHook: `,sdHook.Name)
 			*b.ShutdownHooks=append(*b.ShutdownHooks, sdHook)
 		case OutputFilter:
 			*b.WriteThread.OutputFilters=append(*b.WriteThread.OutputFilters, thing.(OutputFilter))
