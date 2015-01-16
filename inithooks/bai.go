@@ -1,4 +1,4 @@
-package sdhooks
+package inithooks
 
 import (
 	sl "github.com/djosephsen/slacker/slackerlib"

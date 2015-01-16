@@ -17,15 +17,23 @@ func main(){
 	go bot.ReadThread.Start(bot)
 	go bot.Broker.Start(bot)
 
-	//Register all the handlers, chores and filters
+	//Read in and register all the handlers, chores and filters
 	if err = initHooks(bot); err !=nil{
       sl.Logger.Error(err)
+		return
 	}
 
 	//run startup-hooks
 	if bot.StartupHooks != nil{
 		for _,h := range *bot.StartupHooks{
 			go h.Run(bot)
+		}
+	}
+
+	// Start the chores
+	if bot.Chores != nil{
+		for _,c := range *bot.Chores{
+			c.Start(bot)
 		}
 	}
 

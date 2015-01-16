@@ -24,30 +24,37 @@ type Bot struct{
 	Broker 				*Broker
 	StartupHooks		*[]StartupHook
 	ShutdownHooks		*[]ShutdownHook
+	Chores				*[]Chore
 	SigChan				chan os.Signal
 	SyncChan				chan bool
 }
 
 func (bot *Bot) Init() error {
-   bot.MID = 0
-   bot.Config = newConfig()
+	bot.MID = 0
+	bot.Config = newConfig()
 	bot.Name = bot.Config.Name
 	bot.SigChan = make(chan os.Signal, 1)
 	bot.SyncChan = make(chan bool)
-	bot.WriteThread=&WriteThread{
+	bot.WriteThread = &WriteThread{
 		Chan:		make(chan Event),
 		RunChan:	make(chan bool),
 	}
-	bot.ReadThread=&ReadThread{
+	bot.ReadThread = &ReadThread{
 		Chan:		make(chan Event,1),
 	}
-	bot.Broker=new(Broker)
-	err:=bot.getMeASocket()
-   if err != nil{
-      return err
-   }
-	bot.StartupHooks=new([]StartupHook)
-	bot.ShutdownHooks=new([]ShutdownHook)
+	bot.Broker = &Broker{
+		Bot:					bot,
+		PreFilters: 		new([]InputFilter),
+		MessageHandlers: 	new([]MessageHandler),
+		EventHandlers:		new([]GenericEventHandler),
+	}
+	err := bot.getMeASocket()
+	if err != nil{
+		return err
+	}
+	bot.StartupHooks = new([]StartupHook)
+	bot.ShutdownHooks = new([]ShutdownHook)
+	bot.Chores = new([]Chore)
 	Logger.SetLevel(logging.GetLevelValue(strings.ToUpper(bot.Config.LogLevel)))
 	Logger.Debug(`Joined team: `, bot.Meta.Team.Name )
 	return nil
@@ -59,7 +66,7 @@ type ReadThread struct{
 }
 
 func (r *ReadThread) Start(b *Bot){
-	r.Bot=b
+	r.Bot = b
 	e := Event{}
 	Logger.Debug(`Read-Thread Started`)
 	for {
@@ -102,7 +109,7 @@ func (w *WriteThread) Start(b *Bot){
 	b.SyncChan <- true
 }
 
-//probably need to make this threadsafe
+//probably need to make this thread-safe (for now only the write thread uses it)
 func (b *Bot) NextMID() int32{
 	b.MID += 1
 	Logger.Debug(`incrementing MID to `, b.MID)
@@ -113,21 +120,26 @@ func (b *Bot) Register(things ...interface{}){
 	for _,thing := range things{
 		switch t := thing.(type) {
 		case MessageHandler:
+			Logger.Debug(`registered MessageHandler: `,thing.(MessageHandler).Name)
 			*b.Broker.MessageHandlers=append(*b.Broker.MessageHandlers,thing.(MessageHandler))	
 		case GenericEventHandler:
+			Logger.Debug(`registered Event Handler: `,thing.(GenericEventHandler).Name)
 			*b.Broker.EventHandlers=append(*b.Broker.EventHandlers, thing.(GenericEventHandler))
-		case PreHandlerFilter:
-			*b.Broker.PreFilters=append(*b.Broker.PreFilters, thing.(PreHandlerFilter))
+		case InputFilter:
+			Logger.Debug(`registered Input Filter: `,thing.(InputFilter).Name)
+			*b.Broker.PreFilters=append(*b.Broker.PreFilters, thing.(InputFilter))
 		case StartupHook:
-			suHook:=thing.(StartupHook)
-			Logger.Debug(`registered StartupHook: `,suHook.Name)
+			Logger.Debug(`registered StartupHook: `,thing.(StartupHook).Name)
 			*b.StartupHooks=append(*b.StartupHooks, thing.(StartupHook))
 		case ShutdownHook:
-			sdHook:=thing.(ShutdownHook)
-			Logger.Debug(`registered ShutdownHook: `,sdHook.Name)
-			*b.ShutdownHooks=append(*b.ShutdownHooks, sdHook)
+			Logger.Debug(`registered ShutdownHook: `,thing.(ShutdownHook).Name)
+			*b.ShutdownHooks=append(*b.ShutdownHooks, thing.(ShutdownHook))
 		case OutputFilter:
+			Logger.Debug(`registered OutputFilter: `,thing.(OutputFilter).Name)
 			*b.WriteThread.OutputFilters=append(*b.WriteThread.OutputFilters, thing.(OutputFilter))
+		case Chore:
+			Logger.Debug(`registered Chore: `,thing.(Chore).Name)
+			*b.Chores=append(*b.Chores, thing.(Chore))
 		default:
 			weirdType:=fmt.Sprintf(`%T`,t)
 			Logger.Error(`sorry I cant register this handler because I don't know what a `,weirdType, ` is`)

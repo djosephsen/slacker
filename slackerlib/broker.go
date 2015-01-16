@@ -8,7 +8,7 @@ import (
 
 type Broker struct{
 	Bot	 *Bot
-   PreFilters        *[]PreHandlerFilter
+   PreFilters        *[]InputFilter
    MessageHandlers   *[]MessageHandler
    EventHandlers     *[]GenericEventHandler
 }
@@ -66,7 +66,7 @@ func (b *Broker) HandleEvent(e *Event){
 	}
 }
 
-type PreHandlerFilter struct {
+type InputFilter struct {
 	Name		string
 	Usage		string
 	Run		func(e *Event) *Event

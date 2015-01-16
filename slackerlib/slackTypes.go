@@ -252,8 +252,17 @@ type Event struct {
 	Bot	  *Bot
 }
 
+func (meta *AuthResponse) GetUserName(id string) string{
+	for _,user := range meta.Users{
+		if user.ID == id{
+			return user.Name
+		}
+	}
+	return ``
+}
+
 func (event *Event) Reply(s string){
-	replyText:=fmt.Sprintf(`%s: %s`, event.User, s)
+	replyText:=fmt.Sprintf(`%s: %s`, event.Bot.Meta.GetUserName(event.User), s)
 	response := Event{
       Type:    event.Type,
       Channel: event.Channel,
