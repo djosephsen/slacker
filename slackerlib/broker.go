@@ -40,7 +40,7 @@ func (b *Broker) This(e *Event){
 }
 
 func (b *Broker) HandleMessage(e *Event){
-	Logger.Debug(`caught message, text: `, e.Text)
+	Logger.Debug(`Broker:: caught message, text: `, e.Text)
 	if b.MessageHandlers == nil{ return }
 	botNamePat := fmt.Sprintf(`^(?:@?%s[:,]?)\s+(?:${1})`, e.Bot.Name)
 	for _,handler := range *b.MessageHandlers{
@@ -58,7 +58,7 @@ func (b *Broker) HandleMessage(e *Event){
 }
 
 func (b *Broker) HandleEvent(e *Event){
-	Logger.Debug(`caught event, type: `, e.Type)
+	Logger.Debug(`Broker:: caught event, type: `, e.Type)
 	if b.EventHandlers == nil{ return }
 	for _,handler := range *b.EventHandlers{
 		go handler.Run(e)

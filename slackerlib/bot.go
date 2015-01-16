@@ -25,6 +25,7 @@ type Bot struct{
 	StartupHooks		*[]StartupHook
 	ShutdownHooks		*[]ShutdownHook
 	SigChan				chan os.Signal
+	SyncChan				chan bool
 }
 
 func (bot *Bot) Init() error {
@@ -32,8 +33,10 @@ func (bot *Bot) Init() error {
    bot.Config = newConfig()
 	bot.Name = bot.Config.Name
 	bot.SigChan = make(chan os.Signal, 1)
+	bot.SyncChan = make(chan bool)
 	bot.WriteThread=&WriteThread{
-		Chan:		make(chan Event,1),
+		Chan:		make(chan Event),
+		RunChan:	make(chan bool),
 	}
 	bot.ReadThread=&ReadThread{
 		Chan:		make(chan Event,1),
@@ -71,23 +74,32 @@ func (r *ReadThread) Start(b *Bot){
 
 type WriteThread struct{
 	Bot				*Bot
+	OutputFilters	*[]OutputFilter
 	Chan				chan Event
-	OutputFilters		*[]OutputFilter
+	RunChan			chan bool
 }
 
 func (w *WriteThread) Start(b *Bot){
 	w.Bot=b
 	w.OutputFilters = new([]OutputFilter)
 	Logger.Debug(`Write-Thread Started`)
-	for {
-		e := <-w.Chan
-		e.ID = b.NextMID()
-		if ejson, _ := json.Marshal(e); len(ejson) >= 16000 {
+	stop := false
+	for !stop {
+		select{
+		case e := <-w.Chan:
+			e.Bot=nil //nil this out or Marshal() dies horrible infinite recusive death
+			e.ID = b.NextMID()
+			Logger.Debug(`WriteThread:: Outbound `,e.Type,`. text: `,e.Text)
+			if ejson, _ := json.Marshal(e); len(ejson) >= 16000 {
 				e = Event{e.ID, e.Type, e.Channel, fmt.Sprintf("ERROR! Response too large. %v Bytes!", len(ejson)), "", "", b}
 			}
-			b.Ws.WriteJSON(e)
-			time.Sleep(time.Second * 1)
+				b.Ws.WriteJSON(e)
+				time.Sleep(time.Second * 1)
+		case stop = <- w.RunChan:
+			stop = true
+			}
 		}
+	b.SyncChan <- true
 }
 
 //probably need to make this threadsafe
@@ -121,4 +133,13 @@ func (b *Bot) Register(things ...interface{}){
 			Logger.Error(`sorry I cant register this handler because I don't know what a `,weirdType, ` is`)
 		}
 	}
+}
+
+func (b *Bot) Say(s string){
+	event := Event{
+		Type: 	`message`,
+		Channel: b.Meta.Channels[0].ID,
+		Text:		s,
+		}
+	b.WriteThread.Chan <- event
 }

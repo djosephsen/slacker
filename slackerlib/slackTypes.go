@@ -247,3 +247,22 @@ type Event struct {
 	Ts      string `json:"ts,omitempty"`
 	Bot	  *Bot
 }
+
+func (event *Event) Reply(s string){
+	replyText:=fmt.Sprintf(`%s: %s`, event.User, s)
+	response := Event{
+      Type:    event.Type,
+      Channel: event.Channel,
+      Text:    replyText,
+      }
+   event.Bot.WriteThread.Chan <- response
+}
+
+func (event *Event) Respond(s string){
+	response := Event{
+      Type:    event.Type,
+      Channel: event.Channel,
+      Text:    s,
+      }
+   event.Bot.WriteThread.Chan <- response
+}
