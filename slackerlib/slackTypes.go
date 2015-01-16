@@ -1,5 +1,9 @@
 package slackerlib
 
+import (
+	"fmt"
+)
+
 type AuthResponse struct {
 	Bots []struct {
 		Deleted bool `json:"deleted"`
