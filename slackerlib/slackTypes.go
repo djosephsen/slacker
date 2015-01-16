@@ -1,4 +1,4 @@
-package main
+package slackerlib
 
 type AuthResponse struct {
 	Bots []struct {

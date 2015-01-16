@@ -1,4 +1,4 @@
-package main
+package slackerlib
 
 import (
 	`regexp`
@@ -24,21 +24,24 @@ func (broker *Broker) Start(bot *Bot){
    }
 }
 
-func (broker *Broker) This(e *Event){
+func (b *Broker) This(e *Event){
    //run the pre-handeler filters
-   for _,filter := range *broker.PreFilters{ //run the pre-handler filters
-      e=filter.Run(e)
-   }
+	if b.PreFilters != nil{ 
+   	for _,filter := range *b.PreFilters{ //run the pre-handler filters
+     		e=filter.Run(e)
+   	}
+	}
    switch e.Type {
       case `message`:
-         go broker.HandleMessage(e)
+         go b.HandleMessage(e)
       default :
-         go broker.HandleEvent(e)
-   }
+         go b.HandleEvent(e)
+	}
 }
 
 func (b *Broker) HandleMessage(e *Event){
 	Logger.Debug(`caught message, text: `, e.Text)
+	if b.MessageHandlers == nil{ return }
 	botNamePat := fmt.Sprintf(`^(?:@?%s[:,]?)\s+(?:${1})`, e.Bot.Name)
 	for _,handler := range *b.MessageHandlers{
 		var r *regexp.Regexp
@@ -56,6 +59,7 @@ func (b *Broker) HandleMessage(e *Event){
 
 func (b *Broker) HandleEvent(e *Event){
 	Logger.Debug(`caught event, type: `, e.Type)
+	if b.EventHandlers == nil{ return }
 	for _,handler := range *b.EventHandlers{
 		go handler.Run(e)
 	}
@@ -66,6 +70,7 @@ type PreHandlerFilter struct {
 	Usage		string
 	Run		func(e *Event) *Event
 }
+
 type MessageHandler struct {
 	Name		string
 	Method	string
@@ -73,21 +78,25 @@ type MessageHandler struct {
 	Usage		string
 	Run		func(e *Event, match []string)
 }
+
 type GenericEventHandler struct {
 	Name		string
 	Usage		string
 	Run		func(e *Event)
 }
+
 type OutputFilter struct {
 	Name		string
 	Usage		string
 	Run		func(e *Event)
 }
+
 type StartupHook struct {
 	Name		string
 	Usage		string
 	Run		func(b *Bot)
 }
+
 type ShutdownHook struct {
 	Name		string
 	Usage		string

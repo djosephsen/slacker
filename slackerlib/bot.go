@@ -1,12 +1,16 @@
-package main
+package slackerlib
 
 import (
 	"github.com/gorilla/websocket"
+	"github.com/ccding/go-logging/logging"
 	"os"
 	"time"
 	"encoding/json"
 	"fmt"
+	"strings"
 )
+
+var Logger = newLogger()
 
 //the top level instantiation of a slackerbot
 type Bot struct{
@@ -14,12 +18,36 @@ type Bot struct{
 	Ws     				*websocket.Conn
 	MID	 				int32
 	Config 				*Config
+	Meta					*AuthResponse
 	ReadThread 			*ReadThread
 	WriteThread 		*WriteThread
 	Broker 				*Broker
 	StartupHooks		*[]StartupHook
 	ShutdownHooks		*[]ShutdownHook
-	sigChan				chan os.Signal
+	SigChan				chan os.Signal
+}
+
+func (bot *Bot) Init() error {
+   bot.MID = 0
+   bot.Config = newConfig()
+	bot.Name = bot.Config.Name
+	bot.SigChan = make(chan os.Signal, 1)
+	bot.WriteThread=&WriteThread{
+		Chan:		make(chan Event,1),
+	}
+	bot.ReadThread=&ReadThread{
+		Chan:		make(chan Event,1),
+	}
+	bot.Broker=new(Broker)
+	err:=bot.getMeASocket()
+   if err != nil{
+      return err
+   }
+	bot.StartupHooks=new([]StartupHook)
+	bot.ShutdownHooks=new([]ShutdownHook)
+	Logger.SetLevel(logging.GetLevelValue(strings.ToUpper(bot.Config.LogLevel)))
+	Logger.Debug(`Joined team: `, bot.Meta.Team.Name )
+	return nil
 }
 
 type ReadThread struct{
@@ -49,6 +77,7 @@ type WriteThread struct{
 
 func (w *WriteThread) Start(b *Bot){
 	w.Bot=b
+	w.OutputFilters = new([]OutputFilter)
 	Logger.Debug(`Write-Thread Started`)
 	for {
 		e := <-w.Chan
@@ -80,11 +109,14 @@ func (b *Bot) Register(things ...interface{}){
 		case StartupHook:
 			*b.StartupHooks=append(*b.StartupHooks, thing.(StartupHook))
 		case ShutdownHook:
-			*b.ShutdownHooks=append(*b.ShutdownHooks, thing.(ShutdownHook))
+			sdHook:=thing.(ShutdownHook)
+			Logger.Debug(`registered shutdownhook: `,sdHook.Name)
+			*b.ShutdownHooks=append(*b.ShutdownHooks, sdHook)
 		case OutputFilter:
 			*b.WriteThread.OutputFilters=append(*b.WriteThread.OutputFilters, thing.(OutputFilter))
 		default:
-			Logger.Error(`sorry I don't know what a `,t, `is`)
+			weirdType:=fmt.Sprintf(`%T`,t)
+			Logger.Error(`sorry I cant register this handler because I don't know what a `,weirdType, ` is`)
 		}
 	}
 }

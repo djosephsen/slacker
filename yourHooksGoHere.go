@@ -1,6 +1,12 @@
 package main
 
-func initHooks(b *Bot) error{
-	//b.register(chores.Ping)
+import(
+	sl "github.com/djosephsen/slacker/slackerlib"
+	"github.com/djosephsen/slacker/sdhooks"
+)
+
+func initHooks(b *sl.Bot) error{
+	//b.Register(chores.Ping)
+	b.Register(sdhooks.Bai)
 	return nil
 }

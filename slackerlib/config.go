@@ -1,4 +1,4 @@
-package main
+package slackerlib
 
 import (
    "github.com/ccding/go-logging/logging"

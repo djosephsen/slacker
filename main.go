@@ -1,29 +1,17 @@
 package main
 
 import (
-"github.com/ccding/go-logging/logging"
+sl "github.com/djosephsen/slacker/slackerlib"
 "os/signal"
-"strings"
 "syscall"
-)
-
-var (
-	Logger = newLogger()
 )
 
 func main(){
 	
-	bot:=new(Bot)
-	bot.MID = 0
-	bot.Config = newConfig()
-	Logger.SetLevel(logging.GetLevelValue(strings.ToUpper(bot.Config.LogLevel)))
+	bot := new(sl.Bot)
+	err := bot.Init()
 
-  var err error
-  bot.Ws, err = getMeASocket(bot.Config.Token) 
-  if err != nil{
-      Logger.Error(err)
-		return
-	}
+   sl.Logger.Debug(`Good Morning! lets see here...`)
 	
 	go bot.WriteThread.Start(bot)
 	go bot.ReadThread.Start(bot)
@@ -31,19 +19,21 @@ func main(){
 
 	//initialize the handlers, chores and filters
 	if err = initHooks(bot); err !=nil{
-      Logger.Error(err)
+      sl.Logger.Error(err)
 	}
 
 	//run startup-hooks
-	for _,h := range *bot.StartupHooks{
-		go h.Run(bot)
+	if bot.StartupHooks != nil{
+		for _,h := range *bot.StartupHooks{
+			go h.Run(bot)
+		}
 	}
 
-	signal.Notify(bot.sigChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	signal.Notify(bot.SigChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
   	stop := false
    for !stop {
       select {
-      case sig := <-bot.sigChan:
+      case sig := <-bot.SigChan:
          switch sig {
          case syscall.SIGINT, syscall.SIGTERM:
             stop = true
@@ -51,10 +41,12 @@ func main(){
       }
    }
    // Stop listening for new signals
-   signal.Stop(bot.sigChan)
+   signal.Stop(bot.SigChan)
 
 	// shutdownn hooks
-	for _,h := range *bot.ShutdownHooks{
-		go h.Run(bot)
+	if bot.ShutdownHooks != nil{
+		for _,h := range *bot.ShutdownHooks{
+			h.Run(bot)
+		}
 	}
 }
