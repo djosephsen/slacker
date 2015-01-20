@@ -26,19 +26,19 @@ That's all working now (more documentation to come).  Features I'm currently wor
 1. Select *Configure Integrations* from your team menu in slack
 2. Add a new *Bots* integration, give your bot a clever name, and take note of your Token
 3. 
-'''
+```
 	go get github.com/djosephsen/slacker
-'''
+```
 4. 
-'''
+```
 	export SLACKER_NAME=<whatever you named your bot in the Slack UI>
 	export SLACKER_TOKEN=<your token>
 	export SLACKER_LOG_LEVEL=DEBUG  # (optional if you'd like to see verbose console messages)
-'''
+```
 5. 
-'''
+```
 slacker
-'''
+```
 
 At this point you should see slacker join your default channel and say hi. 
 ![docs/screenshots/hi.png]
@@ -65,14 +65,14 @@ much why you're here in the first place after all.
 2. Add a new *Bots* integration, give your bot a clever name, and take note of your Token
 
 3. 
-'''
- go get github.com/kr/godep
-'''
+```
+go get github.com/kr/godep
+```
 
 4. Go to https://github.com/djosephsen/slacker/fork to fork this repository (or click the fork button up there ^^) 
 
 5 through like 27.  
-'''
+```
 mkdir -p $GOPATH/github.com/<yourgithubname>
 cd $GOPATH/github.com/<yourgithubname>
 git clone git@github.com:<yourgithubname>/slacker.git
@@ -85,19 +85,19 @@ heroku config:set SLACKER_TOKEN=<your token>
 heroku config:set SLACKER_LOG_LEVEL=DEBUG
 heroku create -b https://github.com/kr/heroku-buildpack-go.git
 git push heroku master
-'''
+```
 
 At this point you should see slacker join your channel.
 ![docs/screenshots/hi.png]
 
 When you make changes or add plugins in the future, you can push them to heroku with: 
 
-'''
+```
 godep save
 git add --all .
 git commit -am 'snarky commit message'
 git push && get push heroku
-'''
+```
 
 ## Words Words Words
 [RE: Adding, removing, and creating plugins](docs/plugins.md)
