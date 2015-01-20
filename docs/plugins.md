@@ -171,3 +171,5 @@ func initPlugins(b *sl.Sbot) error{
 ```
 
 That's it!  You can now rebuild and redeploy your bot and you should be all set.
+
+![bacon](docs/screenshots/bacon.png)
