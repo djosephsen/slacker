@@ -24,17 +24,21 @@ That's all working now (more documentation to come).  Features I'm currently wor
 ## Check out Slacker from your workstation in 5 minutes
 
 1: Select *Configure Integrations* from your team menu in slack
+
 2: Add a new *Bots* integration, give your bot a clever name, and take note of your Token
+
 3: 
 ```
 	go get github.com/djosephsen/slacker
 ```
+
 4: 
 ```
 	export SLACKER_NAME=<whatever you named your bot in the Slack UI>
 	export SLACKER_TOKEN=<your token>
 	export SLACKER_LOG_LEVEL=DEBUG  # (optional if you'd like to see verbose console messages)
 ```
+
 5: 
 ```
 slacker
@@ -70,6 +74,7 @@ go get github.com/kr/godep
 ```
 
 4: Go to https://github.com/djosephsen/slacker/fork to fork this repository (or click the fork button up there ^^) 
+
 5 through like 27:  
 ```
 mkdir -p $GOPATH/github.com/<yourgithubname>
