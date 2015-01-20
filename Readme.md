@@ -27,6 +27,8 @@ That's all working now (more documentation to come).  Features I'm currently wor
 
 2: Add a new *Bots* integration, give your bot a clever name, and take note of your Token
 
+![integration](docs/screenshots/add_bot_integration.png)
+
 3: 
 ```
 	go get github.com/djosephsen/slacker
