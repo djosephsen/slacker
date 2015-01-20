@@ -27,13 +27,13 @@ That's all working now (more documentation to come).  Features I'm currently wor
 2. Add a new *Bots* integration, give your bot a clever name, and take note of your Token
 3. 
 '''
-go get github.com/djosephsen/slacker
+	go get github.com/djosephsen/slacker
 '''
 4. 
 '''
-export SLACKER_NAME=<whatever you named your bot in the Slack UI>
-export SLACKER_TOKEN=<your token>
-export SLACKER_LOG_LEVEL=DEBUG  # (optional if you'd like to see verbose console messages)
+	export SLACKER_NAME=<whatever you named your bot in the Slack UI>
+	export SLACKER_TOKEN=<your token>
+	export SLACKER_LOG_LEVEL=DEBUG  # (optional if you'd like to see verbose console messages)
 '''
 5. 
 '''
