@@ -5,62 +5,11 @@ import (
 )
 
 type AuthResponse struct {
-	Bots []struct {
-		Deleted bool `json:"deleted"`
-		Icons   struct {
-			Image48 string `json:"image_48"`
-		} `json:"icons"`
-		ID   string `json:"id"`
-		Name string `json:"name"`
-	} `json:"bots"`
+	Bots []Bot `json:"bots"`
 	CacheVersion string `json:"cache_version"`
-	Channels     []struct {
-		Created    float64 `json:"created"`
-		Creator    string  `json:"creator"`
-		ID         string  `json:"id"`
-		IsArchived bool    `json:"is_archived"`
-		IsChannel  bool    `json:"is_channel"`
-		IsGeneral  bool    `json:"is_general"`
-		IsMember   bool    `json:"is_member"`
-		LastRead   string  `json:"last_read"`
-		Latest     struct {
-			BotID    string `json:"bot_id"`
-			Subtype  string `json:"subtype"`
-			Text     string `json:"text"`
-			Ts       string `json:"ts"`
-			Type     string `json:"type"`
-			Username string `json:"username"`
-		} `json:"latest"`
-		Members []string `json:"members"`
-		Name    string   `json:"name"`
-		Purpose struct {
-			Creator string  `json:"creator"`
-			LastSet float64 `json:"last_set"`
-			Value   string  `json:"value"`
-		} `json:"purpose"`
-		Topic struct {
-			Creator string  `json:"creator"`
-			LastSet float64 `json:"last_set"`
-			Value   string  `json:"value"`
-		} `json:"topic"`
-		UnreadCount float64 `json:"unread_count"`
-	} `json:"channels"`
-	Groups []interface{} `json:"groups"`
-	Ims    []struct {
-		Created  float64 `json:"created"`
-		ID       string  `json:"id"`
-		IsIm     bool    `json:"is_im"`
-		IsOpen   bool    `json:"is_open"`
-		LastRead string  `json:"last_read"`
-		Latest   struct {
-			Text string `json:"text"`
-			Ts   string `json:"ts"`
-			Type string `json:"type"`
-			User string `json:"user"`
-		} `json:"latest"`
-		UnreadCount float64 `json:"unread_count"`
-		User        string  `json:"user"`
-	} `json:"ims"`
+	Channels     []Channel `json:"channels"`
+	Groups []Group `json:"groups"`
+	Ims    []IM `json:"ims"`
 	LatestEventTs string `json:"latest_event_ts"`
 	Ok            bool   `json:"ok"`
 	Self          struct {
@@ -169,15 +118,7 @@ type AuthResponse struct {
 	Team struct {
 		Domain      string `json:"domain"`
 		EmailDomain string `json:"email_domain"`
-		Icon        struct {
-			Image102     string `json:"image_102"`
-			Image132     string `json:"image_132"`
-			Image34      string `json:"image_34"`
-			Image44      string `json:"image_44"`
-			Image68      string `json:"image_68"`
-			Image88      string `json:"image_88"`
-			ImageDefault bool   `json:"image_default"`
-		} `json:"icon"`
+		Icon        Icon `json:"icon"`
 		ID                string  `json:"id"`
 		MsgEditWindowMins float64 `json:"msg_edit_window_mins"`
 		Name              string  `json:"name"`
@@ -209,37 +150,7 @@ type AuthResponse struct {
 		} `json:"prefs"`
 	} `json:"team"`
 	URL   string `json:"url"`
-	Users []struct {
-		Color             string      `json:"color"`
-		Deleted           bool        `json:"deleted"`
-		HasFiles          bool        `json:"has_files"`
-		ID                string      `json:"id"`
-		IsAdmin           bool        `json:"is_admin"`
-		IsBot             bool        `json:"is_bot"`
-		IsOwner           bool        `json:"is_owner"`
-		IsPrimaryOwner    bool        `json:"is_primary_owner"`
-		IsRestricted      bool        `json:"is_restricted"`
-		IsUltraRestricted bool        `json:"is_ultra_restricted"`
-		Name              string      `json:"name"`
-		Phone             interface{} `json:"phone"`
-		Presence          string      `json:"presence"`
-		Profile           struct {
-			Email              string `json:"email"`
-			Image192           string `json:"image_192"`
-			Image24            string `json:"image_24"`
-			Image32            string `json:"image_32"`
-			Image48            string `json:"image_48"`
-			Image72            string `json:"image_72"`
-			RealName           string `json:"real_name"`
-			RealNameNormalized string `json:"real_name_normalized"`
-		} `json:"profile"`
-		RealName string      `json:"real_name"`
-		Skype    interface{} `json:"skype"`
-		Status   interface{} `json:"status"`
-		Tz       string      `json:"tz"`
-		TzLabel  string      `json:"tz_label"`
-		TzOffset float64     `json:"tz_offset"`
-	} `json:"users"`
+	Users []User `json:"users"`
 }
 
 type Event struct {
@@ -249,7 +160,7 @@ type Event struct {
 	Text    string `json:"text"`
 	User    string `json:"user"`
 	Ts      string `json:"ts,omitempty"`
-	Bot	  *Bot
+	Sbot	  *Sbot
 }
 
 func (meta *AuthResponse) GetUserName(id string) string{
@@ -262,13 +173,13 @@ func (meta *AuthResponse) GetUserName(id string) string{
 }
 
 func (event *Event) Reply(s string){
-	replyText:=fmt.Sprintf(`%s: %s`, event.Bot.Meta.GetUserName(event.User), s)
+	replyText:=fmt.Sprintf(`%s: %s`, event.Sbot.Meta.GetUserName(event.User), s)
 	response := Event{
       Type:    event.Type,
       Channel: event.Channel,
       Text:    replyText,
       }
-   event.Bot.WriteThread.Chan <- response
+   event.Sbot.WriteThread.Chan <- response
 }
 
 func (event *Event) Respond(s string){
@@ -277,5 +188,130 @@ func (event *Event) Respond(s string){
       Channel: event.Channel,
       Text:    s,
       }
-   event.Bot.WriteThread.Chan <- response
+   event.Sbot.WriteThread.Chan <- response
+}
+
+type User struct {
+   Color             string `json:"color"`
+   Deleted           bool   `json:"deleted"`
+   HasFiles          bool   `json:"has_files"`
+   ID                string `json:"id"`
+   IsAdmin           bool   `json:"is_admin"`
+	IsBot             bool   `json:"is_bot"`
+   IsOwner           bool   `json:"is_owner"`
+   IsPrimaryOwner    bool   `json:"is_primary_owner"`
+   IsRestricted      bool   `json:"is_restricted"`
+   IsUltraRestricted bool   `json:"is_ultra_restricted"`
+   Name              string `json:"name"`
+	Phone             interface{} `json:"phone"`
+	Presence          string      `json:"presence"`
+   Profile           struct {
+      Email     string `json:"email"`
+      FirstName string `json:"first_name"`
+      Image192  string `json:"image_192"`
+      Image24   string `json:"image_24"`
+      Image32   string `json:"image_32"`
+      Image48   string `json:"image_48"`
+      Image72   string `json:"image_72"`
+      LastName  string `json:"last_name"`
+      Phone     string `json:"phone"`
+      RealName  string `json:"real_name"`
+		RealNameNormalized string `json:"real_name_normalized"`
+   } `json:"profile"`
+   RealName  string `json:"real_name"`
+   Skype     string `json:"skype"`
+	Status   interface{} `json:"status"`
+	Tz       string      `json:"tz"`
+	TzLabel  string      `json:"tz_label"`
+	TzOffset float64     `json:"tz_offset"`
+}
+
+type Channel struct{
+      Created    float64 `json:"created"`
+      Creator    string  `json:"creator"`
+      ID         string  `json:"id"`
+      IsArchived bool    `json:"is_archived"`
+      IsChannel  bool    `json:"is_channel"`
+      IsGeneral  bool    `json:"is_general"`
+      IsMember   bool    `json:"is_member"`
+      LastRead   string  `json:"last_read"`
+      Latest     struct {
+         BotID    string `json:"bot_id"`
+         Subtype  string `json:"subtype"`
+         Text     string `json:"text"`
+         Ts       string `json:"ts"`
+         Type     string `json:"type"`
+         Username string `json:"username"`
+      } `json:"latest"`
+      Members []string `json:"members"`
+      Name    string   `json:"name"`
+      Purpose struct {
+         Creator string  `json:"creator"`
+         LastSet float64 `json:"last_set"`
+         Value   string  `json:"value"`
+      } `json:"purpose"`
+      Topic struct {
+         Creator string  `json:"creator"`
+         LastSet float64 `json:"last_set"`
+         Value   string  `json:"value"`
+      } `json:"topic"`
+      UnreadCount float64 `json:"unread_count"`
+}
+
+type Group struct {
+   Created    int64    `json:"created"`
+   Creator    string   `json:"creator"`
+   ID         string   `json:"id"`
+   IsArchived bool     `json:"is_archived"`
+   IsGroup    string   `json:"is_group"`
+   Members    []string `json:"members"`
+   Name       string   `json:"name"`
+   Purpose    struct {
+      Creator string `json:"creator"`
+      LastSet int64  `json:"last_set"`
+      Value   string `json:"value"`
+   } `json:"purpose"`
+   Topic struct {
+      Creator string `json:"creator"`
+      LastSet int64  `json:"last_set"`
+      Value   string `json:"value"`
+   } `json:"topic"`
+}
+
+
+type IM struct {
+   Created       int64  `json:"created"`
+   ID            string `json:"id"`
+   IsIm          bool   `json:"is_im"`
+   IsUserDeleted bool   `json:"is_user_deleted"`
+   Latest   struct {
+         Text string `json:"text"`
+         Ts   string `json:"ts"`
+         Type string `json:"type"`
+         User string `json:"user"`
+      } `json:"latest"`
+   User          string `json:"user"`
+}
+
+type Bot struct {
+   Created       float64  `json:"created"`
+   Deleted       bool  `json:"deleted"`
+   Icons         Icon  `json:"icons"`
+   ID            string `json:"id"`
+   IsIm          bool   `json:"is_im"`
+   IsUserDeleted bool   `json:"is_user_deleted"`
+   User          string `json:"user"`
+	Name			  string `json:"name"`
+}
+
+type Icon   struct {
+      Image192     string `json:"image_132"`
+      Image132     string `json:"image_132"`
+      Image102     string `json:"image_102"`
+      Image88      string `json:"image_88"`
+      Image68      string `json:"image_68"`
+      Image48      string `json:"image_48"`
+      Image44      string `json:"image_44"`
+      Image34      string `json:"image_34"`
+      ImageDefault bool   `json:"image_default"`
 }

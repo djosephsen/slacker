@@ -7,19 +7,19 @@ import (
 )
 
 type Broker struct{
-	Bot	 *Bot
+	Sbot	 *Sbot
    PreFilters        *[]InputFilter
    MessageHandlers   *[]MessageHandler
    EventHandlers     *[]GenericEventHandler
 }
 
-func (broker *Broker) Start(bot *Bot){
-	broker.Bot = bot	
+func (broker *Broker) Start(bot *Sbot){
+	broker.Sbot = bot	
 	Logger.Debug(`Broker Started`)
 	for {
       select {
       	case event := <-bot.ReadThread.Chan:
-				event.Bot = bot
+				event.Sbot = bot
          	go broker.This(&event)
       }
    }
@@ -43,23 +43,25 @@ func (b *Broker) This(e *Event){
 func (b *Broker) HandleMessage(e *Event){
 	Logger.Debug(`Broker:: caught message, text: `, e.Text)
 	if b.MessageHandlers == nil{ return }
-	botNamePat := fmt.Sprintf(`^(?:@?%s[:,]?)\s+(?:${1})`, e.Bot.Name)
+	botNamePat := fmt.Sprintf(`^(?:@?%s[:,]?)\s+(?:${1})`, e.Sbot.Name)
 	for _,handler := range *b.MessageHandlers{
 		var r *regexp.Regexp
 		if handler.Method == `RESPOND`{
 			r = regexp.MustCompile(strings.Replace(botNamePat,"${1}", handler.Pattern, 1))
 		}else{
-			r= regexp.MustCompile(handler.Pattern)
+			r = regexp.MustCompile(handler.Pattern)
 		}
+		Logger.Debug(`attempting to match: `, handler.Pattern, ` to: `,e.Text)
 		if r.MatchString(e.Text){
 			match:=r.FindAllStringSubmatch(e.Text, -1)[0]
+		   Logger.Debug(`MATCH!`)
 			go handler.Run(e, match) 
 		}
 	}
 }
 
 func (b *Broker) HandleEvent(e *Event){
-	Logger.Debug(`Broker:: caught event, type: `, e.Type)
+	Logger.Debug(`Broker:: caught event, type: `, e.Type, ` text:`, e.Text)
 	if b.EventHandlers == nil{ return }
 	for _,handler := range *b.EventHandlers{
 		go handler.Run(e)
@@ -95,11 +97,11 @@ type OutputFilter struct {
 type StartupHook struct {
 	Name		string
 	Usage		string
-	Run		func(b *Bot)
+	Run		func(b *Sbot)
 }
 
 type ShutdownHook struct {
 	Name		string
 	Usage		string
-	Run		func(b *Bot)
+	Run		func(b *Sbot)
 }

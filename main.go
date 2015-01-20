@@ -9,7 +9,7 @@ sl "github.com/djosephsen/slacker/slackerlib"
 func main(){
 	
 	//make a bot
-	bot := new(sl.Bot)
+	bot := new(sl.Sbot)
 	err := bot.Init()
 
 	//start the read, write and broker threads

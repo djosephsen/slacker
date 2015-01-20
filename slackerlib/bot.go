@@ -13,7 +13,7 @@ import (
 var Logger = newLogger()
 
 //the top level instantiation of a slackerbot
-type Bot struct{
+type Sbot struct{
 	Name					string
 	Ws     				*websocket.Conn
 	MID	 				int32
@@ -29,7 +29,7 @@ type Bot struct{
 	SyncChan				chan bool
 }
 
-func (bot *Bot) Init() error {
+func (bot *Sbot) Init() error {
 	bot.MID = 0
 	bot.Config = newConfig()
 	bot.Name = bot.Config.Name
@@ -43,7 +43,7 @@ func (bot *Bot) Init() error {
 		Chan:		make(chan Event,1),
 	}
 	bot.Broker = &Broker{
-		Bot:					bot,
+		Sbot:					bot,
 		PreFilters: 		new([]InputFilter),
 		MessageHandlers: 	new([]MessageHandler),
 		EventHandlers:		new([]GenericEventHandler),
@@ -61,18 +61,18 @@ func (bot *Bot) Init() error {
 }
 
 type ReadThread struct{
-	Bot					*Bot
+	Sbot					*Sbot
 	Chan					chan Event
 }
 
-func (r *ReadThread) Start(b *Bot){
-	r.Bot = b
+func (r *ReadThread) Start(b *Sbot){
+	r.Sbot = b
 	e := Event{}
 	Logger.Debug(`Read-Thread Started`)
 	for {
 		b.Ws.ReadJSON(&e)
 		if (e != Event{}) { // if the event isn't empty
-			e.Bot = b
+			e.Sbot = b
 			b.ReadThread.Chan <- e
 			e = Event{}
 		}
@@ -80,25 +80,30 @@ func (r *ReadThread) Start(b *Bot){
 }
 
 type WriteThread struct{
-	Bot				*Bot
+	Sbot				*Sbot
 	OutputFilters	*[]OutputFilter
 	Chan				chan Event
 	RunChan			chan bool
 }
 
-func (w *WriteThread) Start(b *Bot){
-	w.Bot=b
+func (w *WriteThread) Start(b *Sbot){
+	w.Sbot=b
 	w.OutputFilters = new([]OutputFilter)
 	Logger.Debug(`Write-Thread Started`)
 	stop := false
 	for !stop {
 		select{
 		case e := <-w.Chan:
-			e.Bot=nil //nil this out or Marshal() dies horrible infinite recusive death
+			e.Sbot=nil //nil the bot pointer out or Marshal() dies horrible infinite recusive death
 			e.ID = b.NextMID()
-			Logger.Debug(`WriteThread:: Outbound `,e.Type,`. text: `,e.Text)
+			Logger.Debug(`WriteThread:: Outbound `,e.Type,` channel: `,e.Channel,`. text: `,e.Text)
 			if ejson, _ := json.Marshal(e); len(ejson) >= 16000 {
-				e = Event{e.ID, e.Type, e.Channel, fmt.Sprintf("ERROR! Response too large. %v Bytes!", len(ejson)), "", "", b}
+				e = Event{
+				ID: e.ID, 
+				Type: e.Type, 
+				Channel: e.Channel, 
+				Text: fmt.Sprintf("ERROR! Response too large. %v Bytes!", len(ejson)), 
+				}
 			}
 				b.Ws.WriteJSON(e)
 				time.Sleep(time.Second * 1)
@@ -110,13 +115,13 @@ func (w *WriteThread) Start(b *Bot){
 }
 
 //probably need to make this thread-safe (for now only the write thread uses it)
-func (b *Bot) NextMID() int32{
+func (b *Sbot) NextMID() int32{
 	b.MID += 1
 	Logger.Debug(`incrementing MID to `, b.MID)
 	return b.MID
 }
 
-func (b *Bot) Register(things ...interface{}){
+func (b *Sbot) Register(things ...interface{}){
 	for _,thing := range things{
 		switch t := thing.(type) {
 		case MessageHandler:
@@ -147,11 +152,28 @@ func (b *Bot) Register(things ...interface{}){
 	}
 }
 
-func (b *Bot) Say(s string){
+// Say something in the named channel (or the default channel if none specified)
+func (b *Sbot) Say(s string, channel ...string){
+	var c string
+	if channel != nil{
+		c=channel[0]
+	}else{
+		c=b.DefaultChannel()
+	}
 	event := Event{
 		Type: 	`message`,
-		Channel: b.Meta.Channels[0].ID,
+		Channel: c,
 		Text:		s,
 		}
 	b.WriteThread.Chan <- event
+}
+
+//returns the Team's default channel 
+func (b *Sbot) DefaultChannel() string{
+	for _, c := range b.Meta.Channels{
+		if c.IsGeneral{
+			return c.ID
+		}
+	}
+	return b.Meta.Channels[0].ID
 }

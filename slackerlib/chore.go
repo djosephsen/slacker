@@ -10,7 +10,7 @@ type Chore struct {
    Name     string
    Usage    string
    Sched    string
-   Run      func(b *Bot)
+   Run      func(b *Sbot)
    State    string
    Next     time.Time
    Timer    *time.Timer
@@ -20,18 +20,18 @@ type Chore struct {
 // (probably just me being dense)
 type ChoreTrigger struct {
 	Chore		*Chore
-	Bot		*Bot
+	Sbot		*Sbot
 }
 
 func (t *ChoreTrigger) Pull(){
    Logger.Debug("Triggered: ",t.Chore.Name)
    t.Chore.State="running"
-   go t.Chore.Run(t.Bot)
-   t.Chore.Start(t.Bot)
+   go t.Chore.Run(t.Sbot)
+   t.Chore.Start(t.Sbot)
 }
 
 // Schedule the chores
-func (bot *Bot) StartChores() error{
+func (bot *Sbot) StartChores() error{
    for _, c := range *bot.Chores {
       c.Start(bot)
       Logger.Debug("Started chore: ",c.Name)
@@ -39,7 +39,7 @@ func (bot *Bot) StartChores() error{
    return nil
 }
 
-func (c *Chore) Start(bot *Bot) error{
+func (c *Chore) Start(bot *Sbot) error{
    Logger.Debug("Re-Starting: ",c.Name)
    expr := cronexpr.MustParse(c.Sched)
    if expr.Next(time.Now()).IsZero(){
@@ -55,7 +55,7 @@ func (c *Chore) Start(bot *Bot) error{
                Logger.Debug("creating a new timer")
 					trigger:=&ChoreTrigger{
 						Chore: c,
-						Bot:   bot,
+						Sbot:   bot,
 					}
                c.Timer = time.AfterFunc(dur, trigger.Pull) // auto go-routine'd
             }else{
@@ -72,7 +72,7 @@ func (c *Chore) Start(bot *Bot) error{
    return nil
 }
 
-func GetChoreByName(name string, bot *Bot) *Chore{
+func GetChoreByName(name string, bot *Sbot) *Chore{
    for _, c := range *bot.Chores {
       if c.Name == name{
          return &c

@@ -11,7 +11,7 @@ import (
 )
 
 // Go forth and get a websocket and all the Slack Team Metadata 
-func (bot *Bot) getMeASocket() error {
+func (bot *Sbot) getMeASocket() error {
 	rtmURL:=`https://slack.com/api/rtm.start`
 	resp, err := http.PostForm(rtmURL, url.Values{"token": {bot.Config.Token}}) 
 	if err != nil{
