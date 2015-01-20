@@ -14,13 +14,6 @@ engineers and production environments.
  * Simple semantics for creating and linking-in your own plugins
  * Full access to all Slack RTM events and [metadata](docs/meta.md)
 
-That's all working now (more documentation to come).  Features I'm currently working on include: 
-
- * In-memory and redis-backed persistent storage (a brain)
- * Slack slash-command support (to send private commands)
- * failover
- * more documentation
-
 ## Check out Slacker from your workstation in 5 minutes
 
 1: Select *Configure Integrations* from your team menu in slack
@@ -141,4 +134,5 @@ and be given a channel to block on for a reply from the slack API.
 * I'm in the process of porting my [hal handlers](https://github.com/djosephsen/HalHandlers) 
 to slacker so I can replace the Hal bots I'm currently running on various teams with Slacker. 
 * Slacker badly needs persistent storage (the equivilent of a hubot brain)
-* Other loftier stuff that I'm too scared to think about yet.
+* Transparent support for custom [slash-commands](https://dbgone.slack.com/services/new/slash-commands)
+* Other loftier stuff like redundency and/or failover that I'm too scared to think about yet.
