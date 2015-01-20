@@ -38,10 +38,11 @@ inithook for it.
 
 ## For example, bacon.
 
-Lets walk through the creation and addition of a simple plugin. Say you wanted
-your chatbot to respond "MMMMMMMM omgbacon" whenever it overheard the word
-"bacon" in conversation. The first step is to cd to the handlers directory, and
-create a file called bacon.go with a struct that lookes like this: 
+Lets walk through the creation and addition of a simple message handler plugin.
+Say you wanted your chatbot to respond "MMMMMMMM omgbacon" whenever it
+overheard the word "bacon" in conversation. The first step is to cd to the
+handlers directory, and create a file called bacon.go and define a struct that
+lookes like this: 
 
 ```
 import sl "github.com/djosephsen/slacker/slackerlib"
@@ -53,7 +54,7 @@ var Bacon = sl.MessageHandler{
 	Run:		myRunFunc,
 }
 ```
-The general idea is that you create an instance of the proper type -- in this
+The general idea is that you define an instance of the proper type -- in this
 case, a slackerlib.MessageHandler -- and fill it out appropriately. 
 
 * Name: is the name of your handler

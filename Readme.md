@@ -108,5 +108,37 @@ git commit -am 'snarky commit message'
 git push && get push heroku
 ```
 
-## Words Words Words
-[RE: Adding, removing, and creating plugins](docs/plugins.md)
+## What now?
+Get started [adding, removing, and creating plugins](docs/plugins.md)
+
+## Why Slacker? 
+
+Slacker wants to be a quality, featureful Slack-specific chatbot with a focus
+on operations-abstractions. It borrows heavily in design and implementation
+from [Hal](https://github.com/danryan/hal) and
+[gopherbot](https://github.com/daph/gopherbot), but focuses less on giving you
+a library to write a chatbot, and more on giving you a chatbot.
+
+I made Slacker to be a tool. Through it, I'm working to provide a flexible
+framework that can solve the operational needs of engineers, like deploying
+code to production, providing timely metric data, running automated breakfix
+and defensive network re-configurations and stuff like that.
+
+If you're in a chatops shop today and that sounds interesting to you I'd love
+your comments and help. Actually, even if you're not in a chatops shop today
+and this looks interesting to you I'd love your comments and help. 
+
+## Current Status
+
+Slacker is basically working and basically documented. All plugin types are
+implemented and functional.  
+
+### Todo's in order of when I'll probably get to them: 
+
+* I'm considering some drastic changes to the Broker code to make it so that you
+can make non-RTM API calls from convienence functions provided by the broker,
+and be given a channel to block on for a reply from the slack API.
+* I'm in the process of porting my [hal handlers](https://github.com/djosephsen/HalHandlers) 
+to slacker so I can replace the Hal bots I'm currently running on various teams with Slacker. 
+* Slacker badly needs persistent storage (the equivilent of a hubot brain)
+* Other loftier stuff that I'm too scared to think about yet.
