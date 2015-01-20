@@ -17,8 +17,8 @@ func main(){
 	go bot.ReadThread.Start(bot)
 	go bot.Broker.Start(bot)
 
-	//Read in and register all the handlers, chores and filters
-	if err = initHooks(bot); err !=nil{
+	//Read in and register all the handlers, chores, filters, and hooks
+	if err = initPlugins(bot); err !=nil{
       sl.Logger.Error(err)
 		return
 	}

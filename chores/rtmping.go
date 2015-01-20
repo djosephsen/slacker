@@ -4,11 +4,11 @@ import (
 	sl "github.com/djosephsen/slacker/slackerlib"
 )
 
-var Ping = sl.Chore{
-	Name:  `ping`,
+var RTMPing = sl.Chore{
+	Name:  `rtm-ping`,
 	Usage:  `Sends an RTM ping message to slack every 20 seconds`,
 	Sched: `*/20 * * * * * *`,
-	Run: func(bot *sl.Bot){
+	Run: func(bot *sl.Sbot){
 		event:=sl.Event{
 			ID: 0,  //the write thread will give this a real MID
 			Type: `ping`,

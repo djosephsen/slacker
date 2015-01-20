@@ -4,7 +4,7 @@ import (
 	sl "github.com/djosephsen/slacker/slackerlib"
 )
 
-var myRunFunc = func(e *sl.Event, match []string){
+func myRunFunc (e *sl.Event, match []string){
 	e.Respond(`MMMMMMMMmmm ... omgbacon`)
 }
 
