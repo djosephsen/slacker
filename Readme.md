@@ -57,7 +57,7 @@ before he leaves the channel.
 
 These behaviors are both implemented as inithooks (the first as a startup hook
 and the second as a shutdown hook). If you find this annoying you can comment
-them out from the [yourHooksGoHere.go](yourHooksGoHere.go) file, which is the
+them out from the [yourPluginsGoHere.go](yourPluginsGoHere.go) file, which is the
 file that controls all of the plugins Slacker uses to interact with you and
 your production environment.  Slacker comes with a variety of simple plugins to
 get you started and give you examples to work from, and it's pretty easy to add
