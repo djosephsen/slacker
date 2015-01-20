@@ -45,11 +45,11 @@ slacker
 ```
 
 At this point you should see slacker join your default channel and say hi. 
-![docs/screenshots/hi.png]
+![hi](docs/screenshots/hi.png)
 
 If you ctl-C him in the console window, you should also see him say goodbye
 before he leaves the channel. 
-![docs/screenshots/bye.png]
+![bye](docs/screenshots/bye.png)
 
 These behaviors are both implemented as inithooks (the first as a startup hook
 and the second as a shutdown hook). If you find this annoying you can comment
@@ -92,7 +92,7 @@ git push heroku master
 ```
 
 At this point you should see slacker join your channel.
-![docs/screenshots/hi.png]
+![hi](docs/screenshots/hi.png)
 
 When you make changes or add plugins in the future, you can push them to heroku with: 
 
