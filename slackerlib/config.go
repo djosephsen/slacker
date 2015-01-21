@@ -10,9 +10,9 @@ import (
 // Config struct
 type Config struct {
    Name        string `env:"key=SLACKER_NAME default=slackerbot"`
-   StoreName   string `env:"key=SLACKER_BRAIN default=memory"`
    LogLevel    string `env:"key=SLACKER_LOG_LEVEL default=info"`
    Token 	   string `env:"key=SLACKER_TOKEN default=info"`
+   RedisURL 	string `env:"key=SLACKER_REDIS_URL"`
 }
 
 func newConfig() *Config {

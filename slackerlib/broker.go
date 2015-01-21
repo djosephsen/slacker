@@ -51,10 +51,9 @@ func (b *Broker) HandleMessage(e *Event){
 		}else{
 			r = regexp.MustCompile(handler.Pattern)
 		}
-		Logger.Debug(`attempting to match: `, handler.Pattern, ` to: `,e.Text)
 		if r.MatchString(e.Text){
 			match:=r.FindAllStringSubmatch(e.Text, -1)[0]
-		   Logger.Debug(`MATCH!`)
+		   Logger.Debug(`Broker:: running handler: `, handler.Name)
 			go handler.Run(e, match) 
 		}
 	}

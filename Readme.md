@@ -7,6 +7,7 @@ engineers and production environments.
 
  * Define Event and Message [Handlers](docs/handlers.md) so Slacker will parse and respond to chat conversation and commands
  * Specify Cron-Syntax Schedules for Slacker to run periodic [*Chores*](docs/chores.md)
+ * In-Memory or Redis-backed [persistent storage](docs/brain.md) built-in (aka hubot.brain)
  * Set up inbound and outbound [filters](docs/filters.md) to modify events enroute to or from SlackHQ
  * Correctly handle and respond to system-level events like SigTerms by configuring runtime [hooks](docs/hooks.md)
  * Verbose Logging 
@@ -133,6 +134,6 @@ can make non-RTM API calls from convienence functions provided by the broker,
 and be given a channel to block on for a reply from the slack API.
 * I'm in the process of porting my [hal handlers](https://github.com/djosephsen/HalHandlers) 
 to slacker so I can replace the Hal bots I'm currently running on various teams with Slacker. 
-* Slacker badly needs persistent storage (the equivilent of a hubot brain)
+* Integrated statsd support for emitting metrics
 * Transparent support for custom [slash-commands](https://dbgone.slack.com/services/new/slash-commands)
 * Other loftier stuff like redundency and/or failover that I'm too scared to think about yet.

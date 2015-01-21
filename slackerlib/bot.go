@@ -22,6 +22,7 @@ type Sbot struct{
 	ReadThread 			*ReadThread
 	WriteThread 		*WriteThread
 	Broker 				*Broker
+	Brain					*Brain
 	StartupHooks		*[]StartupHook
 	ShutdownHooks		*[]ShutdownHook
 	Chores				*[]Chore
@@ -30,9 +31,11 @@ type Sbot struct{
 }
 
 func (bot *Sbot) Init() error {
+	var err error
 	bot.MID = 0
 	bot.Config = newConfig()
 	bot.Name = bot.Config.Name
+	Logger.SetLevel(logging.GetLevelValue(strings.ToUpper(bot.Config.LogLevel)))
 	bot.SigChan = make(chan os.Signal, 1)
 	bot.SyncChan = make(chan bool)
 	bot.WriteThread = &WriteThread{
@@ -48,15 +51,18 @@ func (bot *Sbot) Init() error {
 		MessageHandlers: 	new([]MessageHandler),
 		EventHandlers:		new([]GenericEventHandler),
 	}
-	err := bot.getMeASocket()
+	bot.Brain, err = bot.NewBrain()
 	if err != nil{
 		return err
 	}
+	err = bot.getMeASocket()
+	if err != nil{
+		return err
+	}
+	Logger.Debug(`Joined team: `, bot.Meta.Team.Name )
 	bot.StartupHooks = new([]StartupHook)
 	bot.ShutdownHooks = new([]ShutdownHook)
 	bot.Chores = new([]Chore)
-	Logger.SetLevel(logging.GetLevelValue(strings.ToUpper(bot.Config.LogLevel)))
-	Logger.Debug(`Joined team: `, bot.Meta.Team.Name )
 	return nil
 }
 
