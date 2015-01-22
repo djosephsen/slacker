@@ -10,7 +10,10 @@ func main(){
 	
 	//make a bot
 	bot := new(sl.Sbot)
-	err := bot.Init()
+	if err := bot.Init(); err != nil{
+		sl.Logger.Error(err)
+		return
+	}
 
 	//start the read, write and broker threads
 	go bot.WriteThread.Start(bot)
@@ -18,7 +21,7 @@ func main(){
 	go bot.Broker.Start(bot)
 
 	//Read in and register all the handlers, chores, filters, and hooks
-	if err = initPlugins(bot); err !=nil{
+	if err := initPlugins(bot); err !=nil{
       sl.Logger.Error(err)
 		return
 	}
