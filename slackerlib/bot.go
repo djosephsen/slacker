@@ -33,9 +33,13 @@ type Sbot struct{
 func (bot *Sbot) Init() error {
 	var err error
 	bot.MID = 0
+
+	//read in configs
 	bot.Config = newConfig()
 	bot.Name = bot.Config.Name
 	Logger.SetLevel(logging.GetLevelValue(strings.ToUpper(bot.Config.LogLevel)))
+
+	// initialize all the things
 	bot.SigChan = make(chan os.Signal, 1)
 	bot.SyncChan = make(chan bool)
 	bot.WriteThread = &WriteThread{
@@ -52,11 +56,15 @@ func (bot *Sbot) Init() error {
 	if err != nil{
 		return err
 	}
+
+	// Log into SlackHQ 
 	err = bot.getMeASocket()
 	if err != nil{
 		return err
 	}
 	Logger.Debug(`Joined team: `, bot.Meta.Team.Name )
+
+	// Join Channels other than General
 	return nil
 }
 
