@@ -32,7 +32,7 @@ func (t *ChoreTrigger) Pull(){
 
 // Schedule the chores
 func (bot *Sbot) StartChores() error{
-   for _, c := range *bot.Chores {
+   for _, c := range bot.Chores {
       c.Start(bot)
    }
    return nil
@@ -48,6 +48,7 @@ func (c *Chore) Start(bot *Sbot) error{
       dur := c.Next.Sub(time.Now())
          if dur>0{
             if c.Timer == nil{
+   				Logger.Debug("Chore: ",c.Name, " Instantiated. Scheduled at: ",c.Next)
 					trigger:=&ChoreTrigger{
 						Chore: c,
 						Sbot:   bot,
@@ -55,6 +56,7 @@ func (c *Chore) Start(bot *Sbot) error{
                c.Timer = time.AfterFunc(dur, trigger.Pull) // auto go-routine'd
             }else{
                c.Timer.Reset(dur) // auto go-routine'd
+   				Logger.Debug("Chore: ",c.Name, " rescheduled at: ",c.Next)
             }
          c.State=fmt.Sprintf("Scheduled: %s",c.Next.String())
          }else{
@@ -62,14 +64,13 @@ func (c *Chore) Start(bot *Sbot) error{
             c.State=fmt.Sprintf("Halted. (invalid duration: %s)",dur)
          }
       }
-   Logger.Debug("Chore: ",c.Name, " scheduled at: ",c.Next)
    return nil
 }
 
 func GetChoreByName(name string, bot *Sbot) *Chore{
-   for _, c := range *bot.Chores {
+   for _, c := range bot.Chores {
       if c.Name == name{
-         return &c
+         return c
       }else{
          Logger.Debug("chore not found: ",name)
       }
@@ -77,8 +78,12 @@ func GetChoreByName(name string, bot *Sbot) *Chore{
    return nil
 }
 
-func (c *Chore)Kill() error{
+func StopChore(c *Chore) error{
    Logger.Debug(`Stopping: `,c.Name)
+	if c.Timer == nil{
+		Logger.Error(`hmm.. can't stop job: `, c.Name,`. Timer undefined!`)
+		return fmt.Errorf(`I GOTS NO TIMER!`)	
+	}
    c.State=`Halted by request`
    c.Timer.Stop()
    return nil

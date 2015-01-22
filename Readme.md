@@ -10,10 +10,9 @@ engineers and production environments.
  * In-Memory or Redis-backed [persistent storage](docs/brain.md) built-in (aka hubot.brain)
  * Set up inbound and outbound [filters](docs/filters.md) to modify events enroute to or from SlackHQ
  * Correctly handle and respond to system-level events like SigTerms by configuring runtime [hooks](docs/hooks.md)
- * Verbose Logging 
- * Effecient, parallel execution of handlers, filters, and chores
+ * [Configures](docs/config.md) via env-vars and logs to stdout like a well behaved 12-factor app
+ * Efficient, parallel execution of handlers, filters, and chores
  * Simple semantics for creating and linking-in your own plugins
- * Full access to all Slack RTM events and [metadata](docs/meta.md)
 
 ## Check out Slacker from your workstation in 5 minutes
 
@@ -115,7 +114,7 @@ a library to write a chatbot, and more on giving you a chatbot.
 
 I made Slacker to be a tool. Through it, I'm working to provide a flexible
 framework that can solve the operational needs of engineers, like deploying
-code to production, providing timely metric data, running automated breakfix
+code to production, providing timely metric data, running automated break-fix
 and defensive network re-configurations and stuff like that.
 
 If you're in a chatops shop today and that sounds interesting to you I'd love
@@ -130,10 +129,11 @@ implemented and functional.
 ### Todo's in order of when I'll probably get to them: 
 
 * I'm considering some drastic changes to the Broker code to make it so that you
-can make non-RTM API calls from convienence functions provided by the broker,
+can make non-RTM API calls from convenience functions provided by the broker,
 and be given a channel to block on for a reply from the slack API.
 * I'm in the process of porting my [hal handlers](https://github.com/djosephsen/HalHandlers) 
 to slacker so I can replace the Hal bots I'm currently running on various teams with Slacker. 
 * Integrated statsd support for emitting metrics
 * Transparent support for custom [slash-commands](https://dbgone.slack.com/services/new/slash-commands)
-* Other loftier stuff like redundency and/or failover that I'm too scared to think about yet.
+* Other loftier stuff like redundancy, failover, and Lua-Plugins that I'm too
+busy to seriously think about yet.

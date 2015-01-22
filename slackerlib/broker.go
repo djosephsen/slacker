@@ -8,9 +8,9 @@ import (
 
 type Broker struct{
 	Sbot	 *Sbot
-   PreFilters        *[]InputFilter
-   MessageHandlers   *[]MessageHandler
-   EventHandlers     *[]GenericEventHandler
+   PreFilters        []*InputFilter
+   MessageHandlers   []*MessageHandler
+   EventHandlers     []*GenericEventHandler
 }
 
 func (broker *Broker) Start(bot *Sbot){
@@ -28,7 +28,7 @@ func (broker *Broker) Start(bot *Sbot){
 func (b *Broker) This(e *Event){
    //run the pre-handeler filters
 	if b.PreFilters != nil{ 
-   	for _,filter := range *b.PreFilters{ //run the pre-handler filters
+   	for _,filter := range b.PreFilters{ //run the pre-handler filters
      		e=filter.Run(e)
    	}
 	}
@@ -44,7 +44,7 @@ func (b *Broker) HandleMessage(e *Event){
 	Logger.Debug(`Broker:: caught message, text: `, e.Text)
 	if b.MessageHandlers == nil{ return }
 	botNamePat := fmt.Sprintf(`^(?:@?%s[:,]?)\s+(?:${1})`, e.Sbot.Name)
-	for _,handler := range *b.MessageHandlers{
+	for _,handler := range b.MessageHandlers{
 		var r *regexp.Regexp
 		if handler.Method == `RESPOND`{
 			r = regexp.MustCompile(strings.Replace(botNamePat,"${1}", handler.Pattern, 1))
@@ -62,7 +62,7 @@ func (b *Broker) HandleMessage(e *Event){
 func (b *Broker) HandleEvent(e *Event){
 	Logger.Debug(`Broker:: caught event, type: `, e.Type, ` text:`, e.Text)
 	if b.EventHandlers == nil{ return }
-	for _,handler := range *b.EventHandlers{
+	for _,handler := range b.EventHandlers{
 		go handler.Run(e)
 	}
 }

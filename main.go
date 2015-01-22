@@ -25,14 +25,14 @@ func main(){
 
 	//run startup-hooks
 	if bot.StartupHooks != nil{
-		for _,h := range *bot.StartupHooks{
+		for _,h := range bot.StartupHooks{
 			go h.Run(bot)
 		}
 	}
 
 	// Start the chores
 	if bot.Chores != nil{
-		for _,c := range *bot.Chores{
+		for _,c := range bot.Chores{
 			c.Start(bot)
 		}
 	}
@@ -54,7 +54,7 @@ func main(){
 
 	// Run Shutdownn Hooks
 	if bot.ShutdownHooks != nil{
-		for _,h := range *bot.ShutdownHooks{
+		for _,h := range bot.ShutdownHooks{
 			h.Run(bot)
 		}
 	}
