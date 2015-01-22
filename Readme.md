@@ -102,7 +102,9 @@ git push && get push heroku
 ```
 
 ## What now?
+Find out [what slacker can do](docs/builtins.md) out of the box
 Get started [adding, removing, and creating plugins](docs/plugins.md)
+Learn more about [configuring](docs/configuration.md) Slacker (there's not much to it)
 
 ## Why Slacker? 
 
@@ -112,10 +114,15 @@ from [Hal](https://github.com/danryan/hal) and
 [gopherbot](https://github.com/daph/gopherbot), but focuses less on giving you
 a library to write a chatbot, and more on giving you a chatbot.
 
-I made Slacker to be a tool. Through it, I'm working to provide a flexible
+I made Slacker to be a tool. Through it, I'm hoping to provide a flexible
 framework that can solve the operational needs of engineers, like deploying
 code to production, providing timely metric data, running automated break-fix
-and defensive network re-configurations and stuff like that.
+and defensive network re-configurations and stuff like that.  
+
+I also made Slacker to be an anthropomorphic bot whose personality you can
+shape, because people don't use what they don't like. But things that are fun
+are interesting, and things that are interesting get adopted, improved, used,
+and cherished.
 
 If you're in a chatops shop today and that sounds interesting to you I'd love
 your comments and help. Actually, even if you're not in a chatops shop today
@@ -124,15 +131,14 @@ and this looks interesting to you I'd love your comments and help.
 ## Current Status
 
 Slacker is basically working and basically documented. All plugin types are
-implemented and functional.  
+implemented and functional and there are several included plugins of varying
+degress of complexity that should help get you started writing your own
+plugins. 
 
 ### Todo's in order of when I'll probably get to them: 
 
-* I'm considering some drastic changes to the Broker code to make it so that you
-can make non-RTM API calls from convenience functions provided by the broker,
-and be given a channel to block on for a reply from the slack API.
-* I'm in the process of porting my [hal handlers](https://github.com/djosephsen/HalHandlers) 
-to slacker so I can replace the Hal bots I'm currently running on various teams with Slacker. 
+* built-in convienence functions for calling out to the Slack API proper
+* I'm considering some drastic changes to the Broker code to support the bullet point above
 * Integrated statsd support for emitting metrics
 * Transparent support for custom [slash-commands](https://dbgone.slack.com/services/new/slash-commands)
 * Other loftier stuff like redundancy, failover, and Lua-Plugins that I'm too

@@ -174,3 +174,35 @@ func initPlugins(b *sl.Sbot) error{
 That's it!  You can now rebuild and redeploy your bot and you should be all set.
 
 ![bacon](screenshots/bacon.png)
+
+
+## Importing plugins from your own $GOHOME
+Finally, I should also mention: Go's import semantics make it quite easy to
+manage your own Slacker plugin repository outside of the Slacker directory
+hierarchy.  If for example your github name was 'cynthia', and you had a
+slacker plugin repository at *github.com/cynthia/slackerPlugins*, then you
+could simply add your repository to the imports list at the top of the
+*yourHooksGoHere.go* file and Register it along with the included plugins like
+so: 
+
+```
+package main
+
+import(
+   sl "github.com/djosephsen/slacker/slackerlib"
+   "github.com/djosephsen/slacker/inithooks"
+   "github.com/djosephsen/slacker/handlers"
+   "github.com/djosephsen/slacker/chores"
+   "github.com/cynthia/ChatBotDeployCode/slackerPlugin"
+)
+
+func initPlugins(b *sl.Sbot) error{
+   b.Register(inithooks.Hai)
+   b.Register(inithooks.Bai)
+   b.Register(handlers.Syn)
+   b.Register(handlers.Bacon)
+   b.Register(chores.RTMPing)
+   b.Register(slackerPlugin.Deployinator)
+   return nil
+}
+```

@@ -25,8 +25,9 @@ type Brain interface {
 }
 ```
 generally speaking, the pattern is for your plugin to:
-	1. call sBot.Brain.Open() to connect to the back-end
-   2. Set, Get, or Delete values to its hearts content
-	3. call sBot.Brain.Close() to close the connection to the back-end when its done
+
+1. call sBot.Brain.Open() to connect to the back-end
+2. Set, Get, or Delete values to its hearts content
+3. call sBot.Brain.Close() to close the connection to the back-end when its done
 
 Checkout the [braintest](/handlers/braintest.go) handler for a more detailed example. 
