@@ -12,7 +12,7 @@ var ChannelID = sl.MessageHandler{
 	Method:  `RESPOND`,
 	Pattern: `(?i)(what channel)|(ID *channel)|(channel *ID)`,
 	Run: func(e *sl.Event, match []string){
-		reply := fmt.Sprintf("Current channel ID is: %s",e.ID)
+		reply := fmt.Sprintf("Current channel ID is: %s",e.Channel)
 		e.Reply(reply)
 	},
 }

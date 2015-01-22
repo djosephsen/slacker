@@ -11,7 +11,7 @@ func initPlugins(b *sl.Sbot) error{
 	b.Register(inithooks.Hai)
 	b.Register(inithooks.Bai)
 	b.Register(handlers.Syn)
-	b.Register(handlers.Bacon)
+	b.Register(handlers.Help)
 	b.Register(handlers.Braintest)
 	b.Register(handlers.ListChores)
 	b.Register(handlers.ManageChores)
