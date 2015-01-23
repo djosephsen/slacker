@@ -17,7 +17,6 @@ func main(){
 
 	//start the read, write and broker threads
 	go bot.WriteThread.Start(bot)
-	go bot.ReadThread.Start(bot)
 	go bot.Broker.Start(bot)
 
 	//Read in and register all the handlers, chores, filters, and hooks

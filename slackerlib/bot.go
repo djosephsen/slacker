@@ -19,7 +19,6 @@ type Sbot struct{
 	MID	 				int32
 	Config 				*Config
 	Meta					*ApiResponse
-	ReadThread 			*ReadThread
 	WriteThread 		*WriteThread
 	Broker 				*Broker
 	Brain					*Brain
@@ -46,9 +45,6 @@ func (bot *Sbot) Init() error {
 		Chan:		make(chan Event),
 		RunChan:	make(chan bool),
 	}
-	bot.ReadThread = &ReadThread{
-		Chan:		make(chan Event,1),
-	}
 	bot.Broker = &Broker{
 		Sbot:					bot,
 	}
@@ -66,25 +62,6 @@ func (bot *Sbot) Init() error {
 
 	// aaaand we're good
 	return nil
-}
-
-type ReadThread struct{
-	Sbot					*Sbot
-	Chan					chan Event
-}
-
-func (r *ReadThread) Start(b *Sbot){
-	r.Sbot = b
-	e := Event{}
-	Logger.Debug(`Read-Thread Started`)
-	for {
-		b.Ws.ReadJSON(&e)
-		if (e != Event{}) { // if the event isn't empty
-			e.Sbot = b
-			b.ReadThread.Chan <- e
-			e = Event{}
-		}
-	}
 }
 
 type WriteThread struct{
@@ -135,8 +112,8 @@ func (b *Sbot) Register(things ...interface{}){
 			m:=thing.(MessageHandler)
 			Logger.Debug(`registered MessageHandler: `,m.Name)
 			b.Broker.MessageHandlers=append(b.Broker.MessageHandlers, &m)	
-		case GenericEventHandler:
-			g:=thing.(GenericEventHandler)
+		case EventHandler:
+			g:=thing.(EventHandler)
 			Logger.Debug(`registered Event Handler: `,g.Name)
 			b.Broker.EventHandlers=append(b.Broker.EventHandlers, &g)
 		case InputFilter:

@@ -4,39 +4,48 @@ import (
 	`regexp`
 	`fmt`
 	`strings`
+	`encoding/json`
 )
 
+// broker reads messages from the slack websocket and brokers them out
 type Broker struct{
 	Sbot	 *Sbot
    PreFilters        []*InputFilter
    MessageHandlers   []*MessageHandler
-   EventHandlers     []*GenericEventHandler
+   EventHandlers     []*EventHandler
 }
 
 func (broker *Broker) Start(bot *Sbot){
 	broker.Sbot = bot	
 	Logger.Debug(`Broker Started`)
 	for {
-      select {
-      	case event := <-bot.ReadThread.Chan:
-				event.Sbot = bot
-         	go broker.This(&event)
-      }
+		thingy := make(map[string]interface{})
+		bot.Ws.ReadJSON(&thingy)
+      go broker.This(thingy)
    }
 }
 
-func (b *Broker) This(e *Event){
-   //run the pre-handeler filters
+//Figure out what kind of thingy this is, package it, and ship it to the right handler(s)
+func (b *Broker) This(thingy map[string]interface{}){
+//run the pre-handeler filters
 	if b.PreFilters != nil{ 
    	for _,filter := range b.PreFilters{ //run the pre-handler filters
-     		e=filter.Run(e)
+     		thingy = filter.Run(thingy)
    	}
 	}
-   switch e.Type {
-      case `message`:
-         go b.HandleMessage(e)
-      default :
-         go b.HandleEvent(e)
+	// stop here if a prefilter delted our thingy
+	if len(thingy) == 0 { return }
+
+	jthingy,_ := json.Marshal(thingy)
+	typeOfThingy := thingy[`type`]
+	switch typeOfThingy{
+	case `message`:
+		message := new(Event)
+		json.Unmarshal(jthingy, message)
+		message.Sbot = b.Sbot
+      b.HandleMessage(message)
+	default:
+		b.HandleWTF(thingy)
 	}
 }
 
@@ -59,18 +68,20 @@ func (b *Broker) HandleMessage(e *Event){
 	}
 }
 
-func (b *Broker) HandleEvent(e *Event){
-	Logger.Debug(`Broker:: caught event, type: `, e.Type, ` text:`, e.Text)
+func (b *Broker) HandleWTF(thingy map[string]interface{}){
+	Logger.Debug(`Broker:: caught unknown type: `,thingy[`type`])
 	if b.EventHandlers == nil{ return }
 	for _,handler := range b.EventHandlers{
-		go handler.Run(e)
+		if handler.Type == `*`{
+			handler.Run(&HandlerPackage{Type: `unk`,Sbot: b.Sbot, Thingy: thingy})
+		}
 	}
 }
 
 type InputFilter struct {
 	Name		string
 	Usage		string
-	Run		func(e *Event) *Event
+	Run		func(thingy map[string]interface{}) map[string]interface{}
 }
 
 type MessageHandler struct {
@@ -81,10 +92,17 @@ type MessageHandler struct {
 	Run		func(e *Event, match []string)
 }
 
-type GenericEventHandler struct {
+type EventHandler struct {
 	Name		string
 	Usage		string
-	Run		func(e *Event)
+	Type		string
+	Run		func(pack *HandlerPackage)
+}
+
+type HandlerPackage struct {
+	Type		string
+	Sbot		*Sbot
+	Thingy	interface{}
 }
 
 type OutputFilter struct {
