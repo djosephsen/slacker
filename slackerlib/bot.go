@@ -18,7 +18,7 @@ type Sbot struct{
 	Ws     				*websocket.Conn
 	MID	 				int32
 	Config 				*Config
-	Meta					*AuthResponse
+	Meta					*ApiResponse
 	ReadThread 			*ReadThread
 	WriteThread 		*WriteThread
 	Broker 				*Broker

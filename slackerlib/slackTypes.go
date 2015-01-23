@@ -1,18 +1,141 @@
 package slackerlib
 
-import (
-	"fmt"
-)
-
-type AuthResponse struct {
+type ApiResponse struct {
 	Bots []Bot `json:"bots"`
 	CacheVersion string `json:"cache_version"`
 	Channels     []Channel `json:"channels"`
+	Channel     Channel `json:"channel"`
 	Groups []Group `json:"groups"`
+	Group 	Group `json:"group"`
 	Ims    []IM `json:"ims"`
 	LatestEventTs string `json:"latest_event_ts"`
+	Latest		 string `json:"latest"`
 	Ok            bool   `json:"ok"`
-	Self          struct {
+	HasMore		 bool		`json:"has_more"`
+ 	Self Self	`json:"self"`
+ 	Team Team	`json:"team"`
+	URL   string `json:"url"`
+	Users []User `json:"users"`
+	User 	User `json:"user"`
+	Messages 	[]Event `json:"messages"`
+}
+
+type Event struct {
+	ID      int32    `json:"id"`
+	Type    string `json:"type"`
+	Channel string `json:"channel"`
+	Text    string `json:"text"`
+	User    string `json:"user"`
+	UserName    string `json:"username"`
+   BotID    string `json:"bot_id"`
+   Subtype  string `json:"subtype"`
+	Ts      string `json:"ts,omitempty"`
+	Sbot	  *Sbot
+}
+
+type User struct {
+   Color             string `json:"color"`
+   Deleted           bool   `json:"deleted"`
+   HasFiles          bool   `json:"has_files"`
+   ID                string `json:"id"`
+   IsAdmin           bool   `json:"is_admin"`
+	IsBot             bool   `json:"is_bot"`
+   IsOwner           bool   `json:"is_owner"`
+   IsPrimaryOwner    bool   `json:"is_primary_owner"`
+   IsRestricted      bool   `json:"is_restricted"`
+   IsUltraRestricted bool   `json:"is_ultra_restricted"`
+   Name              string `json:"name"`
+	Phone             interface{} `json:"phone"`
+	Presence          string      `json:"presence"`
+   Profile           struct {
+      Email     string `json:"email"`
+      FirstName string `json:"first_name"`
+      Image192  string `json:"image_192"`
+      Image24   string `json:"image_24"`
+      Image32   string `json:"image_32"`
+      Image48   string `json:"image_48"`
+      Image72   string `json:"image_72"`
+      LastName  string `json:"last_name"`
+      Phone     string `json:"phone"`
+      RealName  string `json:"real_name"`
+		RealNameNormalized string `json:"real_name_normalized"`
+   } `json:"profile"`
+   RealName  string `json:"real_name"`
+   Skype     string `json:"skype"`
+	Status   interface{} `json:"status"`
+	Tz       string      `json:"tz"`
+	TzLabel  string      `json:"tz_label"`
+	TzOffset float64     `json:"tz_offset"`
+}
+
+type Channel struct{
+      Created    float64 `json:"created"`
+      Creator    string  `json:"creator"`
+      ID         string  `json:"id"`
+      IsArchived bool    `json:"is_archived"`
+      IsChannel  bool    `json:"is_channel"`
+      IsGeneral  bool    `json:"is_general"`
+      IsMember   bool    `json:"is_member"`
+      LastRead   string  `json:"last_read"`
+      Latest     Event   `json:"latest"`
+      Members []string `json:"members"`
+      Name    string   `json:"name"`
+      Purpose  Topic  `json:"purpose"`
+      Topic 	Topic  `json:"topic"`
+      UnreadCount float64 `json:"unread_count"`
+}
+
+type Group struct {
+   Created    int64    `json:"created"`
+   Creator    string   `json:"creator"`
+   ID         string   `json:"id"`
+   IsArchived bool     `json:"is_archived"`
+   IsGroup    string   `json:"is_group"`
+   Members    []string `json:"members"`
+   Name       string   `json:"name"`
+   Purpose    Topic 	 `json:"purpose"`
+   Topic 	Topic 	`json:"topic"`
+}
+
+type Topic struct {
+         Creator string  `json:"creator"`
+         LastSet float64 `json:"last_set"`
+         Value   string  `json:"value"`
+} 
+
+type IM struct {
+   Created       int64  `json:"created"`
+   ID            string `json:"id"`
+   IsIm          bool   `json:"is_im"`
+   IsUserDeleted bool   `json:"is_user_deleted"`
+   Latest   	Event `json:"latest"`
+   User          string `json:"user"`
+}
+
+type Bot struct {
+   Created       float64  `json:"created"`
+   Deleted       bool  `json:"deleted"`
+   Icons         Icon  `json:"icons"`
+   ID            string `json:"id"`
+   IsIm          bool   `json:"is_im"`
+   IsUserDeleted bool   `json:"is_user_deleted"`
+   User          string `json:"user"`
+	Name			  string `json:"name"`
+}
+
+type Icon   struct {
+      Image192     string `json:"image_132"`
+      Image132     string `json:"image_132"`
+      Image102     string `json:"image_102"`
+      Image88      string `json:"image_88"`
+      Image68      string `json:"image_68"`
+      Image48      string `json:"image_48"`
+      Image44      string `json:"image_44"`
+      Image34      string `json:"image_34"`
+      ImageDefault bool   `json:"image_default"`
+}
+
+type	Self struct {
 		Created        float64 `json:"created"`
 		ID             string  `json:"id"`
 		ManualPresence string  `json:"manual_presence"`
@@ -114,8 +237,9 @@ type AuthResponse struct {
 			WelcomeMessageHidden            bool    `json:"welcome_message_hidden"`
 			WinSsbBullet                    bool    `json:"win_ssb_bullet"`
 		} `json:"prefs"`
-	} `json:"self"`
-	Team struct {
+	}
+
+type	Team struct {
 		Domain      string `json:"domain"`
 		EmailDomain string `json:"email_domain"`
 		Icon        Icon `json:"icon"`
@@ -148,170 +272,5 @@ type AuthResponse struct {
 			WhoCanKickGroups       string   `json:"who_can_kick_groups"`
 			WhoCanPostGeneral      string   `json:"who_can_post_general"`
 		} `json:"prefs"`
-	} `json:"team"`
-	URL   string `json:"url"`
-	Users []User `json:"users"`
-}
+	} 
 
-type Event struct {
-	ID      int32    `json:"id"`
-	Type    string `json:"type"`
-	Channel string `json:"channel"`
-	Text    string `json:"text"`
-	User    string `json:"user"`
-	Ts      string `json:"ts,omitempty"`
-	Sbot	  *Sbot
-}
-
-func (meta *AuthResponse) GetUserName(id string) string{
-	for _,user := range meta.Users{
-		if user.ID == id{
-			return user.Name
-		}
-	}
-	return ``
-}
-
-func (event *Event) Reply(s string){
-	replyText:=fmt.Sprintf(`%s: %s`, event.Sbot.Meta.GetUserName(event.User), s)
-	response := Event{
-      Type:    event.Type,
-      Channel: event.Channel,
-      Text:    replyText,
-      }
-   event.Sbot.WriteThread.Chan <- response
-}
-
-func (event *Event) Respond(s string){
-	response := Event{
-      Type:    event.Type,
-      Channel: event.Channel,
-      Text:    s,
-      }
-   event.Sbot.WriteThread.Chan <- response
-}
-
-type User struct {
-   Color             string `json:"color"`
-   Deleted           bool   `json:"deleted"`
-   HasFiles          bool   `json:"has_files"`
-   ID                string `json:"id"`
-   IsAdmin           bool   `json:"is_admin"`
-	IsBot             bool   `json:"is_bot"`
-   IsOwner           bool   `json:"is_owner"`
-   IsPrimaryOwner    bool   `json:"is_primary_owner"`
-   IsRestricted      bool   `json:"is_restricted"`
-   IsUltraRestricted bool   `json:"is_ultra_restricted"`
-   Name              string `json:"name"`
-	Phone             interface{} `json:"phone"`
-	Presence          string      `json:"presence"`
-   Profile           struct {
-      Email     string `json:"email"`
-      FirstName string `json:"first_name"`
-      Image192  string `json:"image_192"`
-      Image24   string `json:"image_24"`
-      Image32   string `json:"image_32"`
-      Image48   string `json:"image_48"`
-      Image72   string `json:"image_72"`
-      LastName  string `json:"last_name"`
-      Phone     string `json:"phone"`
-      RealName  string `json:"real_name"`
-		RealNameNormalized string `json:"real_name_normalized"`
-   } `json:"profile"`
-   RealName  string `json:"real_name"`
-   Skype     string `json:"skype"`
-	Status   interface{} `json:"status"`
-	Tz       string      `json:"tz"`
-	TzLabel  string      `json:"tz_label"`
-	TzOffset float64     `json:"tz_offset"`
-}
-
-type Channel struct{
-      Created    float64 `json:"created"`
-      Creator    string  `json:"creator"`
-      ID         string  `json:"id"`
-      IsArchived bool    `json:"is_archived"`
-      IsChannel  bool    `json:"is_channel"`
-      IsGeneral  bool    `json:"is_general"`
-      IsMember   bool    `json:"is_member"`
-      LastRead   string  `json:"last_read"`
-      Latest     struct {
-         BotID    string `json:"bot_id"`
-         Subtype  string `json:"subtype"`
-         Text     string `json:"text"`
-         Ts       string `json:"ts"`
-         Type     string `json:"type"`
-         Username string `json:"username"`
-      } `json:"latest"`
-      Members []string `json:"members"`
-      Name    string   `json:"name"`
-      Purpose struct {
-         Creator string  `json:"creator"`
-         LastSet float64 `json:"last_set"`
-         Value   string  `json:"value"`
-      } `json:"purpose"`
-      Topic struct {
-         Creator string  `json:"creator"`
-         LastSet float64 `json:"last_set"`
-         Value   string  `json:"value"`
-      } `json:"topic"`
-      UnreadCount float64 `json:"unread_count"`
-}
-
-type Group struct {
-   Created    int64    `json:"created"`
-   Creator    string   `json:"creator"`
-   ID         string   `json:"id"`
-   IsArchived bool     `json:"is_archived"`
-   IsGroup    string   `json:"is_group"`
-   Members    []string `json:"members"`
-   Name       string   `json:"name"`
-   Purpose    struct {
-      Creator string `json:"creator"`
-      LastSet int64  `json:"last_set"`
-      Value   string `json:"value"`
-   } `json:"purpose"`
-   Topic struct {
-      Creator string `json:"creator"`
-      LastSet int64  `json:"last_set"`
-      Value   string `json:"value"`
-   } `json:"topic"`
-}
-
-
-type IM struct {
-   Created       int64  `json:"created"`
-   ID            string `json:"id"`
-   IsIm          bool   `json:"is_im"`
-   IsUserDeleted bool   `json:"is_user_deleted"`
-   Latest   struct {
-         Text string `json:"text"`
-         Ts   string `json:"ts"`
-         Type string `json:"type"`
-         User string `json:"user"`
-      } `json:"latest"`
-   User          string `json:"user"`
-}
-
-type Bot struct {
-   Created       float64  `json:"created"`
-   Deleted       bool  `json:"deleted"`
-   Icons         Icon  `json:"icons"`
-   ID            string `json:"id"`
-   IsIm          bool   `json:"is_im"`
-   IsUserDeleted bool   `json:"is_user_deleted"`
-   User          string `json:"user"`
-	Name			  string `json:"name"`
-}
-
-type Icon   struct {
-      Image192     string `json:"image_132"`
-      Image132     string `json:"image_132"`
-      Image102     string `json:"image_102"`
-      Image88      string `json:"image_88"`
-      Image68      string `json:"image_68"`
-      Image48      string `json:"image_48"`
-      Image44      string `json:"image_44"`
-      Image34      string `json:"image_34"`
-      ImageDefault bool   `json:"image_default"`
-}
