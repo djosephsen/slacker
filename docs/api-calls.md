@@ -42,7 +42,8 @@ var ZOMGPCI = sl.MessageHandler{
 var ccPAT := `^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35\d{3})\d{11})$` // good luck ever fixing that suckers
 ```
 and delCCFunc is a function that calls the slackAPI to delete any message that
-triggers the handler:
+triggers the handler ([here](https://api.slack.com/methods/chat.delete) is
+slack's delete chat method documentation for reference):
 
 ```
 func delCCFunc (e *sl.Event, match []string){
@@ -78,5 +79,5 @@ func delCCFunc (e *sl.Event, match []string){
 You can read more about [url.Values
 here](http://golang.org/pkg/net/url/#Values). It's basically just a
 *map[string][]string* with some helpful functions.  Consult the [SlackAPI
-docs](https://api.slack.com/methods/chat.delete) for a up-to-date list of
+docs](https://api.slack.com/methods) for a up-to-date list of
 methods and their corrisponding URL's. 
