@@ -64,7 +64,7 @@ func (bot *Sbot) Init() error {
 	}
 	Logger.Debug(`Joined team: `, bot.Meta.Team.Name )
 
-	// Join Channels other than General
+	// aaaand we're good
 	return nil
 }
 

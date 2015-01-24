@@ -17,7 +17,7 @@ type ApiRequest struct{
 }
 
 //base function for communicating with the slack api
-func makeAPIReq(req ApiRequest)(*ApiResponse, error){
+func MakeAPIReq(req ApiRequest)(*ApiResponse, error){
 	resp:=new(ApiResponse)
 	req.Values.Set(`token`, req.Bot.Config.Token)
 
@@ -42,7 +42,7 @@ func (bot *Sbot) getMeASocket() error {
 		Values: make(url.Values),
       Bot: bot,
    }
-   authResp,err := makeAPIReq(req)
+   authResp,err := MakeAPIReq(req)
    if err != nil{
       return err
    }
@@ -100,4 +100,16 @@ func (event *Event) Respond(s string){
       Text:    s,
       }
    event.Sbot.WriteThread.Chan <- response
+}
+
+// convinience function to join a channel
+// bots aren't actually allowed to use this command (I should probably delete this)
+func (channel *Channel) Join(bot *Sbot) (*ApiResponse, error){
+   var req = ApiRequest{
+      URL: `https://slack.com/api/channels.join`,
+		Values: url.Values{`name`: {channel.Name}},
+      Bot: bot,
+   }
+	resp, err := MakeAPIReq(req)
+	return resp, err	
 }
