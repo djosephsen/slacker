@@ -1,9 +1,14 @@
 # Calling into the Slack API Proper
 
+Here's a [list](https://api.slack.com/bot-users) of Slack API commands that
+slacker (as a bot) is allowed to call. Each command has an accompanying URL and
+various options that need to be set for it to work. 
+
 Slacker provides a function called *MakeApiReq()* which is a convienent
-abstraction for calling into and getting responses from the Slack API. Just
-create a new(ApiRequest) and pass it to MakeApiReq(), and you'll get back an
-ApiResponse from SlackHQ. Here's the ApiRequest def: 
+abstraction for calling these commands and getting responses from the Slack
+API. Just pack the url and options into a new(ApiRequest) and pass it to
+MakeApiReq(), and you'll get back an ApiResponse from SlackHQ. Here's the
+ApiRequest definition: 
 
 ```
 type ApiRequest struct{
@@ -13,10 +18,11 @@ type ApiRequest struct{
 }
 ```
 
-Lets see how it works in practice. Imagine for a moment that you work someplace
-terrible, and have been tasked with installing a PCI-Compliance filter that
-finds and deletes messages containing strings that appear to be credit card
-numbers from your corporate slack team.
+Lets write a message handler that makes an API call to see how it works in
+practice. Imagine for a moment that you work someplace terrible, and have been
+tasked with installing a PCI-Compliance filter that finds and deletes messages
+containing strings that appear to be credit card numbers from your corporate
+slack team.
 
 In the time between when you give notice and actually leave, you could
 implement that as a message handler like so:

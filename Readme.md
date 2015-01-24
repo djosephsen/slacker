@@ -13,6 +13,7 @@ engineers and production environments.
  * [Configures](docs/config.md) via env-vars and logs to stdout like a well behaved 12-factor app
  * Efficient, parallel execution of handlers, filters, and chores
  * Simple semantics for creating and linking-in your own plugins
+ * (Pretty) complete [support for the Slack Web API](docs/api-calls.md)
 
 ## Check out Slacker from your workstation in 5 minutes
 
@@ -137,7 +138,6 @@ plugins.
 
 ### Todo's in order of when I'll probably get to them: 
 
-* built-in convienence functions for calling out to the Slack API proper
 * I'm considering some drastic changes to the Broker code to support the bullet point above
 * Integrated statsd support for emitting metrics
 * Transparent support for custom [slash-commands](https://dbgone.slack.com/services/new/slash-commands)
