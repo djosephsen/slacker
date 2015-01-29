@@ -14,6 +14,7 @@ type Config struct {
    Token 	   string `env:"key=SLACKER_TOKEN"`
    Channels 	string `env:"key=SLACKER_CHANNELS default=*"`
    RedisURL 	string `env:"key=SLACKER_REDIS_URL"`
+   Port 			string `env:"key=PORT"`
 }
 
 func newConfig() *Config {

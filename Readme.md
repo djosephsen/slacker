@@ -80,12 +80,16 @@ cd $GOPATH/github.com/<yourgithubname>
 git clone git@github.com:<yourgithubname>/slacker.git
 cd slacker
 git remote add upstream https://github.com/djosephsen/slacker.git
+chmod 755 ./importfix.sh && ./importfix.sh
 go get
 godep save
+heroku create -b https://github.com/kr/heroku-buildpack-go.git
 heroku config:set SLACKER_NAME=<whatever you named your bot in the Slack UI>
 heroku config:set SLACKER_TOKEN=<your token>
 heroku config:set SLACKER_LOG_LEVEL=DEBUG
-heroku create -b https://github.com/kr/heroku-buildpack-go.git
+git add --all .
+git commit -am 'lets DO THIS'
+git push
 git push heroku master
 ```
 

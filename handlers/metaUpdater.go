@@ -4,8 +4,6 @@ import (
 	sl "github.com/djosephsen/slacker/slackerlib"
 )
 
-
-
 var MetaUpdater = sl.EventHandler{
 	Name: `Meta Updater`,
 	Usage:`keeps Sbot.Meta up to date using event traffic from Slackhq`,

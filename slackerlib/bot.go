@@ -60,6 +60,9 @@ func (bot *Sbot) Init() error {
 	}
 	Logger.Debug(`Joined team: `, bot.Meta.Team.Name )
 
+	//listen on PORT if PORT is set
+	if bot.Config.Port != ``{ go bot.StartHttp() }
+
 	// aaaand we're good
 	return nil
 }

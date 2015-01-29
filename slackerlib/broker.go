@@ -36,16 +36,18 @@ func (b *Broker) This(thingy map[string]interface{}){
 	// stop here if a prefilter delted our thingy
 	if len(thingy) == 0 { return }
 
-	jthingy,_ := json.Marshal(thingy)
 	typeOfThingy := thingy[`type`]
 	switch typeOfThingy{
+	case nil:
+		return
 	case `message`:
 		message := new(Event)
+		jthingy,_ := json.Marshal(thingy)
 		json.Unmarshal(jthingy, message)
 		message.Sbot = b.Sbot
       b.HandleMessage(message)
 	default:
-		b.HandleWTF(thingy)
+		b.HandleEvent(thingy)
 	}
 }
 
@@ -68,12 +70,12 @@ func (b *Broker) HandleMessage(e *Event){
 	}
 }
 
-func (b *Broker) HandleWTF(thingy map[string]interface{}){
-	Logger.Debug(`Broker:: caught unknown type: `,thingy[`type`])
+func (b *Broker) HandleEvent(thingy map[string]interface{}){
+	Logger.Debug(`Broker:: Event type: `, thingy[`type`])
 	if b.EventHandlers == nil{ return }
 	for _,handler := range b.EventHandlers{
-		if handler.Type == `*`{
-			handler.Run(&HandlerPackage{Type: `unk`,Sbot: b.Sbot, Thingy: thingy})
+		if matches,_ := regexp.MatchString(handler.Type,thingy[`type`].(string)); matches{
+			handler.Run(&HandlerPackage{Type: thingy[`type`].(string), Sbot: b.Sbot, Thingy: thingy})
 		}
 	}
 }
@@ -102,7 +104,7 @@ type EventHandler struct {
 type HandlerPackage struct {
 	Type		string
 	Sbot		*Sbot
-	Thingy	interface{}
+	Thingy	map[string]interface{}
 }
 
 type OutputFilter struct {

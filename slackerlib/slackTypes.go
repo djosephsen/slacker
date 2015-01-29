@@ -7,7 +7,7 @@ type ApiResponse struct {
 	Channel     Channel `json:"channel,omitempty"`
 	Groups []Group `json:"groups,omitempty"`
 	Group 	Group `json:"group,omitempty"`
-	Ims    []IM `json:"ims,omitempty"`
+	IMs    []IM `json:"ims,omitempty"`
 	LatestEventTs string `json:"latest_event_ts,omitempty"`
 	Latest		 string `json:"latest,omitempty"`
 	Ok            bool   `json:"ok,omitempty"`
