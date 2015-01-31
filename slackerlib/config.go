@@ -10,9 +10,8 @@ import (
 // Config struct
 type Config struct {
    Name        string `env:"key=SLACKER_NAME default=slackerbot"`
-   LogLevel    string `env:"key=SLACKER_LOG_LEVEL default=info"`
    Token 	   string `env:"key=SLACKER_TOKEN"`
-   Channels 	string `env:"key=SLACKER_CHANNELS default=*"`
+   LogLevel    string `env:"key=SLACKER_LOG_LEVEL default=info"`
    RedisURL 	string `env:"key=SLACKER_REDIS_URL"`
    Port 			string `env:"key=PORT"`
 }
