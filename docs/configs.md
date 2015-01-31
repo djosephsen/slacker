@@ -12,7 +12,7 @@ PORT
 Only two are required: 
 
 * SLACKER_NAME:  The name of your bot. (this should match whatever you set your bot's name to on the SlackHQ integrations page.
-* SLACKER_TOWN: Your bot's SlackHQ API Token. 
+* SLACKER_TOKEN: Your bot's SlackHQ API Token. 
 
 A couple others are optional: 
 
@@ -21,4 +21,6 @@ A couple others are optional:
 
 And one you can ignore completely:
 
-* PORT: If this is set, slacker will start a completely useless http server.  This behavior exists solely to prevent Heroku from prematurely killing Slacker. Even when this is used, you don't have to set it. Ignore away.
+* PORT: If this is set, slacker will start a completely useless http server.
+ This behavior exists solely to prevent Heroku from prematurely killing
+ Slacker. Even when this is used, you don't have to set it. Ignore away.
