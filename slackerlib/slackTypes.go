@@ -32,6 +32,7 @@ type Event struct {
    Subtype  string `json:"subtype,omitempty"`
 	Ts      string `json:"ts,omitempty,omitempty"`
 	Sbot	  *Sbot
+	Extra		map[string]interface{}
 }
 
 type User struct {
@@ -67,6 +68,7 @@ type User struct {
 	Tz       string      `json:"tz,omitempty"`
 	TzLabel  string      `json:"tz_label,omitempty"`
 	TzOffset float64     `json:"tz_offset,omitempty"`
+	Extra		map[string]interface{}
 }
 
 type Channel struct{
@@ -84,6 +86,7 @@ type Channel struct{
       Purpose  Topic  `json:"purpose,omitempty"`
       Topic 	Topic  `json:"topic,omitempty"`
       UnreadCount float64 `json:"unread_count,omitempty"`
+		Extra		map[string]interface{}
 }
 
 type Group struct {
@@ -96,6 +99,7 @@ type Group struct {
    Name       string   `json:"name,omitempty"`
    Purpose    Topic 	 `json:"purpose,omitempty"`
    Topic 	Topic 	`json:"topic,omitempty"`
+	Extra		map[string]interface{}
 }
 
 type Topic struct {
@@ -111,6 +115,7 @@ type IM struct {
    IsUserDeleted bool   `json:"is_user_deleted,omitempty"`
    Latest   	Event `json:"latest,omitempty"`
    User          string `json:"user,omitempty"`
+	Extra		map[string]interface{}
 }
 
 type Bot struct {
@@ -122,6 +127,7 @@ type Bot struct {
    IsUserDeleted bool   `json:"is_user_deleted,omitempty"`
    User          string `json:"user,omitempty"`
 	Name			  string `json:"name,omitempty"`
+	Extra		map[string]interface{}
 }
 
 type Icon   struct {
@@ -273,5 +279,6 @@ type	Team struct {
 			WhoCanKickGroups       string   `json:"who_can_kick_groups,omitempty"`
 			WhoCanPostGeneral      string   `json:"who_can_post_general,omitempty"`
 		} `json:"prefs,omitempty"`
-	} 
+	Extra		map[string]interface{}
+} 
 
