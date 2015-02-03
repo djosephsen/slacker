@@ -11,7 +11,7 @@ type ApiResponse struct {
 	LatestEventTs string `json:"latest_event_ts,omitempty"`
 	Latest		 string `json:"latest,omitempty"`
 	Ok            bool   `json:"ok,omitempty"`
-	Error			 string	`json:"error,omitempty"`
+	Error			 bool	   `json:"error,omitempty"`
 	HasMore		 bool		`json:"has_more,omitempty"`
  	Self Self	`json:"self,omitempty"`
  	Team Team	`json:"team,omitempty"`
@@ -91,7 +91,7 @@ type Group struct {
    Creator    string   `json:"creator,omitempty"`
    ID         string   `json:"id,omitempty"`
    IsArchived bool     `json:"is_archived,omitempty"`
-   IsGroup    string   `json:"is_group,omitempty"`
+   IsGroup    bool   `json:"is_group,omitempty"`
    Members    []string `json:"members,omitempty"`
    Name       string   `json:"name,omitempty"`
    Purpose    Topic 	 `json:"purpose,omitempty"`
