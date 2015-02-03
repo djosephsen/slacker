@@ -9,6 +9,6 @@ var Hai = sl.StartupHook{
 	Usage:`log a friendly hello message on startup`,
 	Run:	func(bot *sl.Sbot){
 		sl.Logger.Info(`Oh Hai!.  We're all initialized and ready to go!`)
-		bot.Say(`Oh Hai! I just woke up! :hand:`)
+		bot.Say(`Oh Hai! I just woke up! :hand:`, `C031NGA1Q`)
 	},
 }
