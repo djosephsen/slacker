@@ -14,6 +14,8 @@ func main(){
 		sl.Logger.Error(err)
 		return
 	}
+	brain := *bot.Brain
+	defer brain.Close()
 
 	//start the read, write and broker threads
 	go bot.WriteThread.Start(bot)

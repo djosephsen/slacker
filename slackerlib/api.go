@@ -81,6 +81,16 @@ func (meta *ApiResponse) GetUserName(id string) string{
    return ``
 }
 
+// parses sBot.Meta to return a pointer to a user object given it's ID
+func (meta *ApiResponse) GetUser(id string) *User{
+   for _,user := range meta.Users{
+      if user.ID == id{
+         return &user
+      }
+   }
+   return nil
+}
+
 // convinience function to reply to a message event
 func (event *Event) Reply(s string){
    replyText:=fmt.Sprintf(`%s: %s`, event.Sbot.Meta.GetUserName(event.User), s)

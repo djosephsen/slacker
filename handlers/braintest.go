@@ -13,11 +13,11 @@ var Braintest = sl.MessageHandler{
 	Pattern: `(?i:brain) ((?i)set|get) (\w+) *(\w*)$`,
 	Run:	func(e *sl.Event, match []string){
 		brain := *e.Sbot.Brain
-		if err := brain.Open(); err!=nil{
+		/*if err := brain.Open(); err!=nil{
 			sl.Logger.Debug(err)
 			return
 		}
-		defer brain.Close()
+		defer brain.Close()*/
 		cmd := match[1]
 		key := match[2]
 		if matched,_ := regexp.MatchString(`(?i)set`, cmd); matched{

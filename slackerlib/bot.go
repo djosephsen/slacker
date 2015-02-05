@@ -52,6 +52,11 @@ func (bot *Sbot) Init() error {
 	if err != nil{
 		return err
 	}
+	brain := *bot.Brain
+	if err = brain.Open(); err != nil{
+		Logger.Error(`couldn't open mah brain! `, err)
+		return err
+	}
 
 	// Log into SlackHQ 
 	err = bot.getMeASocket()

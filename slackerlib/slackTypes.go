@@ -11,7 +11,7 @@ type ApiResponse struct {
 	LatestEventTs string `json:"latest_event_ts,omitempty"`
 	Latest		 string `json:"latest,omitempty"`
 	Ok            bool   `json:"ok,omitempty"`
-	Error			 bool	   `json:"error,omitempty"`
+	Error			 string	   `json:"error,omitempty"`
 	HasMore		 bool		`json:"has_more,omitempty"`
  	Self Self	`json:"self,omitempty"`
  	Team Team	`json:"team,omitempty"`
