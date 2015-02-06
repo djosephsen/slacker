@@ -13,6 +13,7 @@ type Config struct {
    Token 	   string `env:"key=SLACKER_TOKEN"`
    LogLevel    string `env:"key=SLACKER_LOG_LEVEL default=info"`
    RedisURL 	string `env:"key=SLACKER_REDIS_URL"`
+   RedisPW 		string `env:"key=SLACKER_REDIS_PW"`
    Port 			string `env:"key=PORT"`
 }
 

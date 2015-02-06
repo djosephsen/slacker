@@ -78,6 +78,7 @@ func (rb *ramBrain) Delete(key string) error {
 //redisbrain backend storage implementation
 type redisBrain struct {
 	url			string
+	pw			   string
 	nameSpace	string
 	client redis.Conn
 }
@@ -87,6 +88,9 @@ func newRedisBrain(b *Sbot) (Brain, error) {
 	s := &redisBrain{
 		url: b.Config.RedisURL,
 		nameSpace: b.Config.Name,
+	}
+	if b.Config.RedisPW != ``{
+		s.pw = b.Config.RedisPW
 	}
 	return s, nil
 }
@@ -102,7 +106,15 @@ func (rb *redisBrain) Open() error {
 		Logger.Error(err)
 		return err
 	}
+	
 	rb.client = conn
+
+	if rb.pw != ``{
+		if _, err := rb.client.Do("AUTH", rb.pw); err != nil{
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -148,3 +160,4 @@ func (rb *redisBrain) Delete(key string) error {
 func (rb *redisBrain) namespace(key string) string {
 	return fmt.Sprintf("%s:%s", rb.nameSpace, key)
 }
+
