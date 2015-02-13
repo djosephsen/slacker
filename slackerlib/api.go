@@ -81,10 +81,20 @@ func (meta *ApiResponse) GetUserName(id string) string{
    return ``
 }
 
-// parses sBot.Meta to return a pointer to a user object given it's ID
+// parses sBot.Meta to return a pointer to a user object given its ID
 func (meta *ApiResponse) GetUser(id string) *User{
    for _,user := range meta.Users{
       if user.ID == id{
+         return &user
+      }
+   }
+   return nil
+}
+
+// parses sBot.Meta to return a pointer to a user object given its Name
+func (meta *ApiResponse) GetUserByName(name string) *User{
+   for _,user := range meta.Users{
+      if user.Name == name{
          return &user
       }
    }
