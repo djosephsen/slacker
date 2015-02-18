@@ -22,7 +22,8 @@ func initPlugins(b *sl.Sbot) error{
 	b.Register(handlers.Tableflip)
 	b.Register(handlers.LoveAndWar)
 	b.Register(handlers.IKR)
-	b.Register(handlers.QuantifyMe)
+	b.Register(handlers.MetaUpdater)
+	//b.Register(handlers.MetaInfo)
 	//chores
 	b.Register(chores.RTMPing)
 	return nil

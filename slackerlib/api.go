@@ -101,6 +101,26 @@ func (meta *ApiResponse) GetUserByName(name string) *User{
    return nil
 }
 
+// parses sBot.Meta to return a pointer to a channel object given its ID
+func (meta *ApiResponse) GetChannel(id string) *Channel{
+   for _,channel := range meta.Channels{
+      if channel.ID == id{
+         return &channel
+      }
+   }
+   return nil
+}
+
+// parses sBot.Meta to return a pointer to a channel object given its Name
+func (meta *ApiResponse) GetChannelByName(name string) *Channel{
+   for _,channel := range meta.Channels{
+      if channel.Name == name{
+         return &channel
+      }
+   }
+   return nil
+}
+
 // convinience function to reply to a message event
 func (event *Event) Reply(s string){
    replyText:=fmt.Sprintf(`%s: %s`, event.Sbot.Meta.GetUserName(event.User), s)
