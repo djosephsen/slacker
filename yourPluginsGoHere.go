@@ -11,6 +11,7 @@ func initPlugins(b *sl.Sbot) error{
 	//init hooks
 	b.Register(inithooks.Hai)
 	b.Register(inithooks.Bai)
+	//b.Register(inithooks.CbTest)
 	//handlers
 	b.Register(handlers.Syn)
 	b.Register(handlers.Help)

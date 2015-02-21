@@ -47,6 +47,7 @@ func (bot *Sbot) Init() error {
 	}
 	bot.Broker = &Broker{
 		Sbot:					bot,
+		APIResponses:		make(map[int32]chan map[string]interface{}),
 	}
 	bot.Brain, err = bot.NewBrain()
 	if err != nil{
@@ -79,6 +80,16 @@ type WriteThread struct{
 	RunChan			chan bool
 }
 
+func (b *Sbot) Send(e *Event) chan map[string]interface{}{
+// this is the primary interface to Slack's write socket. Use this to send events.
+	e.Sbot=nil //nil the bot pointer out or Marshal() dies horrible infinite recusive death
+	e.ID = b.NextMID()
+   b.Broker.APIResponses[e.ID]=make(chan map[string]interface{},1)
+	Logger.Debug(`created APIResponse: `,e.ID)
+	b.WriteThread.Chan <- *e
+	return b.Broker.APIResponses[e.ID]
+}
+
 func (w *WriteThread) Start(b *Sbot){
 	w.Sbot=b
 	Logger.Debug(`Write-Thread Started`)
@@ -86,8 +97,6 @@ func (w *WriteThread) Start(b *Sbot){
 	for !stop {
 		select{
 		case e := <-w.Chan:
-			e.Sbot=nil //nil the bot pointer out or Marshal() dies horrible infinite recusive death
-			e.ID = b.NextMID()
 			Logger.Debug(`WriteThread:: Outbound `,e.Type,` channel: `,e.Channel,`. text: `,e.Text)
 			if ejson, _ := json.Marshal(e); len(ejson) >= 16000 {
 				e = Event{
@@ -144,6 +153,10 @@ func (b *Sbot) Register(things ...interface{}){
 			c:=thing.(Chore)
 			Logger.Debug(`registered Chore: `,c.Name)
 			b.Chores=append(b.Chores, &c)
+		case Callback:
+			c:=thing.(Callback)
+			Logger.Debug(`registered Callback: `,c.Name)
+			b.Broker.Callbacks=append(b.Broker.Callbacks, &c)
 		default:
 			weirdType:=fmt.Sprintf(`%T`,t)
 			Logger.Error(`sorry I cant register this handler because I don't know what a `,weirdType, ` is`)
@@ -159,12 +172,11 @@ func (b *Sbot) Say(s string, channel ...string){
 	}else{
 		c=b.DefaultChannel()
 	}
-	event := Event{
+	b.Send(&Event{
 		Type: 	`message`,
 		Channel: c,
 		Text:		s,
-		}
-	b.WriteThread.Chan <- event
+		})
 }
 
 //returns the Team's default channel 

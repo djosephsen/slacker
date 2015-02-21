@@ -32,6 +32,7 @@ type Event struct {
    Subtype  string `json:"subtype,omitempty"`
 	Ts      string `json:"ts,omitempty,omitempty"`
 	Sbot	  *Sbot
+	CallBackCode string `json:"callbackcode",omitempty,omitempty"`
 	Extra		map[string]interface{}
 }
 

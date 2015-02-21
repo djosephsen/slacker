@@ -122,24 +122,22 @@ func (meta *ApiResponse) GetChannelByName(name string) *Channel{
 }
 
 // convinience function to reply to a message event
-func (event *Event) Reply(s string){
+func (event *Event) Reply(s string) chan map[string]interface{}{
    replyText:=fmt.Sprintf(`%s: %s`, event.Sbot.Meta.GetUserName(event.User), s)
-   response := Event{
+   return event.Sbot.Send(&Event{
       Type:    event.Type,
       Channel: event.Channel,
       Text:    replyText,
-      }
-   event.Sbot.WriteThread.Chan <- response
+      })
 }
 
 // convinience function to respond to a message event
-func (event *Event) Respond(s string){
-   response := Event{
+func (event *Event) Respond(s string) chan map[string]interface{}{
+   return event.Sbot.Send(&Event{
       Type:    event.Type,
       Channel: event.Channel,
       Text:    s,
-      }
-   event.Sbot.WriteThread.Chan <- response
+      })
 }
 
 // convinience function to join a channel

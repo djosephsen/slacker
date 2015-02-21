@@ -13,6 +13,8 @@ type Broker struct{
    PreFilters        []*InputFilter
    MessageHandlers   []*MessageHandler
    EventHandlers     []*EventHandler
+	Callbacks			[]*Callback
+	APIResponses		map[int32]chan map[string]interface{}
 }
 
 func (broker *Broker) Start(bot *Sbot){
@@ -36,6 +38,19 @@ func (b *Broker) This(thingy map[string]interface{}){
 	// stop here if a prefilter delted our thingy
 	if len(thingy) == 0 { return }
 
+	// if it's an api response send it to whomever is listening for it
+	if replyVal, isReply := thingy[`reply_to`]; isReply{
+		if replyVal != nil{ // sometimes the api returns: "reply_to":null
+			b.HandleApiReply(thingy)
+		}
+	}
+
+	// See if anyone has requested a callback that matches it
+	if b.MessageHandlers != nil{
+	// go'ing this so we dont' block the rest of this broker instance 
+		go b.CheckForCallbacks(thingy) 
+	}
+
 	typeOfThingy := thingy[`type`]
 	switch typeOfThingy{
 	case nil:
@@ -48,6 +63,28 @@ func (b *Broker) This(thingy map[string]interface{}){
       b.HandleMessage(message)
 	default:
 		b.HandleEvent(thingy)
+	}
+}
+
+func (b *Broker) CheckForCallbacks(thingy map[string]interface{}){
+	for _,cb := range b.Callbacks{
+		if key, exists := thingy[cb.Key]; exists && key != nil{
+			if matches,_ := regexp.MatchString(cb.Pattern, key.(string)); matches{
+				cb.Channel <- thingy
+			}
+		}
+	}
+}
+	
+func (b *Broker) HandleApiReply(thingy map[string]interface{}){
+	chanID:=int32(thingy[`reply_to`].(float64))
+	Logger.Debug(`Broker:: reply message, to: `, thingy[`reply_to`])
+	if callBackChannel, exists := b.APIResponses[chanID]; exists{
+		callBackChannel <- thingy
+		delete(b.APIResponses,chanID) //dont leak channels
+		Logger.Debug(`deleted callback: `,chanID)
+	} else {
+		Logger.Debug(`no such channel: `,chanID)
 	}
 }
 
@@ -123,4 +160,11 @@ type ShutdownHook struct {
 	Name		string
 	Usage		string
 	Run		func(b *Sbot)
+}
+
+type Callback struct {
+	Name			string
+	Key			string
+	Pattern		string
+	Channel		chan map[string]interface{}
 }
