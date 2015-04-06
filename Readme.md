@@ -109,7 +109,7 @@ git push && get push heroku
 ## What now?
 Find out [what slacker can do](docs/builtins.md) out of the box
 Get started [adding, removing, and creating plugins](docs/plugins.md)
-Learn more about [configuring](docs/configuration.md) Slacker (there's not much to it)
+Learn more about [configuring](docs/configs.md) Slacker (there's not much to it)
 
 ## Why Slacker? 
 
