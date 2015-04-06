@@ -75,8 +75,8 @@ go get github.com/kr/godep
 
 5 through like 27:  
 ```
-mkdir -p $GOPATH/github.com/<yourgithubname>
-cd $GOPATH/github.com/<yourgithubname>
+mkdir -p $GOPATH/src/github.com/<yourgithubname>
+cd $GOPATH/src/github.com/<yourgithubname>
 git clone git@github.com:<yourgithubname>/slacker.git
 cd slacker
 git remote add upstream https://github.com/djosephsen/slacker.git
