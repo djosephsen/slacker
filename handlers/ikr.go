@@ -55,7 +55,7 @@ func ikrRun(e *sl.Event, match []string) {
 			"singit",
 			"^droppin the truth bombs :boom: :boom: :boom:",
 			"#legit",
-			"/me nodds emphatically in agreement",
+			"_nods emphatically in agreement_",
 			"for REALZ though",
 			"FOR REALSIES",
 			"it's like you *literally* just read my mind right now",

@@ -75,8 +75,8 @@ go get github.com/kr/godep
 
 5 through like 27:  
 ```
-mkdir -p $GOPATH/github.com/<yourgithubname>
-cd $GOPATH/github.com/<yourgithubname>
+mkdir -p $GOPATH/src/github.com/<yourgithubname>
+cd $GOPATH/src/github.com/<yourgithubname>
 git clone git@github.com:<yourgithubname>/slacker.git
 cd slacker
 git remote add upstream https://github.com/djosephsen/slacker.git
@@ -109,7 +109,7 @@ git push && get push heroku
 ## What now?
 Find out [what slacker can do](docs/builtins.md) out of the box
 Get started [adding, removing, and creating plugins](docs/plugins.md)
-Learn more about [configuring](docs/configuration.md) Slacker (there's not much to it)
+Learn more about [configuring](docs/configs.md) Slacker (there's not much to it)
 
 ## Why Slacker? 
 
