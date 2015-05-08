@@ -1,13 +1,13 @@
 package main
 
-import(
-	sl "github.com/djosephsen/slacker/slackerlib"
-	"github.com/djosephsen/slacker/inithooks"
-	"github.com/djosephsen/slacker/handlers"
+import (
 	"github.com/djosephsen/slacker/chores"
+	"github.com/djosephsen/slacker/handlers"
+	"github.com/djosephsen/slacker/inithooks"
+	sl "github.com/djosephsen/slacker/slackerlib"
 )
 
-func initPlugins(b *sl.Sbot) error{
+func initPlugins(b *sl.Sbot) error {
 	//init hooks
 	b.Register(inithooks.Hai)
 	b.Register(inithooks.Bai)

@@ -1,129 +1,129 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	sl "github.com/djosephsen/slacker/slackerlib"
 	"math/rand"
-	"time"
 	"net/http"
-	"encoding/json"
 	"regexp"
+	"time"
 )
 
-type insult struct{
-   Insult   string
-   Severity string
+type insult struct {
+	Insult   string
+	Severity string
 }
 
 var LoveAndWar = sl.MessageHandler{
-	Name: `LoveAndWar`,
-	Usage: `<botname> (love|insult) <noun>: bot replies with a compliment or insult respectively ** Warning this plugin uses external API's that may return NSFW responses**`,
+	Name:    `LoveAndWar`,
+	Usage:   `<botname> (love|insult) <noun>: bot replies with a compliment or insult respectively ** Warning this plugin uses external API's that may return NSFW responses**`,
 	Method:  `RESPOND`,
 	Pattern: `(?i)(love|insult) (@*\w+)`,
-	Run: func(e *sl.Event, match []string){
+	Run: func(e *sl.Event, match []string) {
 		var reply string
-		act:=match[1]
-		user:=match[2]
-		if isme,_ := regexp.MatchString(`(?i)me`,user); isme{
+		act := match[1]
+		user := match[2]
+		if isme, _ := regexp.MatchString(`(?i)me`, user); isme {
 			user = e.Sbot.Meta.GetUserName(e.User)
 		}
-		now:=time.Now()
+		now := time.Now()
 		rand.Seed(int64(now.Unix()))
-		if isLove,_ := regexp.MatchString(`(?i)love`,act); isLove{
-			reply=makeLove(user)
-		}else if isWar,_ := regexp.MatchString(`(?i)insult`,act); isWar{
-			reply=makeWar(user)
+		if isLove, _ := regexp.MatchString(`(?i)love`, act); isLove {
+			reply = makeLove(user)
+		} else if isWar, _ := regexp.MatchString(`(?i)insult`, act); isWar {
+			reply = makeWar(user)
 		}
 		e.Respond(reply)
 	},
 }
 
-func makeWar(user string) string{
-	it1:=[]string{
-	`lazy`,
-	`stupid`,
-	`californian`,
-	`slimy`,
-	`smelly`,
-	`slutty`,
-	`pompous`,
-	`communist`,
-	`wangnose`,
-	`pie-eating`,
-	`racist`,
-	`eliteist`,
-	`fascist`,
-	`drug-snarfing`,
-	`slovenly`,
-	`tone-deaf`,
-	`ugly`,
-	`buck-toothed`,
-	`creepy`,
-	`goat-faced`,
+func makeWar(user string) string {
+	it1 := []string{
+		`lazy`,
+		`stupid`,
+		`californian`,
+		`slimy`,
+		`smelly`,
+		`slutty`,
+		`pompous`,
+		`communist`,
+		`wangnose`,
+		`pie-eating`,
+		`racist`,
+		`eliteist`,
+		`fascist`,
+		`drug-snarfing`,
+		`slovenly`,
+		`tone-deaf`,
+		`ugly`,
+		`buck-toothed`,
+		`creepy`,
+		`goat-faced`,
 	}
 
-	it3:=[]string{
-	`spaz`,
-	`douche`,
-	`turd`,
-	`ass`,
-	`rectum`,
-	`butt`,
-	`poop`,
-	`armpit`,
-	`crotch`,
-	`bitch`,
-	`slime`,
-	`prick`,
-	`slut`,
-	`taint`,
-	`roach`,
-	`snot`,
-	`boner`,
-	`shart`,
-	`nut`,
-	`sphincter`,
+	it3 := []string{
+		`spaz`,
+		`douche`,
+		`turd`,
+		`ass`,
+		`rectum`,
+		`butt`,
+		`poop`,
+		`armpit`,
+		`crotch`,
+		`bitch`,
+		`slime`,
+		`prick`,
+		`slut`,
+		`taint`,
+		`roach`,
+		`snot`,
+		`boner`,
+		`shart`,
+		`nut`,
+		`sphincter`,
 	}
 
-	it2:=[]string{
-	`pilot`,
-	`canoe`,
-	`captain`,
-	`pirate`,
-	`hammer`,
-	`knob`,
-	`box`,
-	`jockey`,
-	`nazi`,
-	`waffle`,
-	`goblin`,
-	`nazi`,
-	`biscuit`,
-	`clown`,
-	`socket`,
-	`monster`,
-	`clown`,
-	`hound`,
-	`recepticle`,
-	`balloon`,
+	it2 := []string{
+		`pilot`,
+		`canoe`,
+		`captain`,
+		`pirate`,
+		`hammer`,
+		`knob`,
+		`box`,
+		`jockey`,
+		`nazi`,
+		`waffle`,
+		`goblin`,
+		`nazi`,
+		`biscuit`,
+		`clown`,
+		`socket`,
+		`monster`,
+		`clown`,
+		`hound`,
+		`recepticle`,
+		`balloon`,
 	}
 
-	n:=rand.Intn(2)+1
+	n := rand.Intn(2) + 1
 	switch n {
-		case 1:
-	   	i:=new(insult)
-			resp,_:=http.Get(`http://pleaseinsult.me/api`)
-			dec := json.NewDecoder(resp.Body)
-			dec.Decode(i)
-			return fmt.Sprintf("Hey %s... %s",user, i.Insult)
-		case 2:
-			return fmt.Sprintf("%s is a %s %s %s",user, it1[rand.Intn(len(it1))], it2[rand.Intn(len(it2))],it3[rand.Intn(len(it3))])
+	case 1:
+		i := new(insult)
+		resp, _ := http.Get(`http://pleaseinsult.me/api`)
+		dec := json.NewDecoder(resp.Body)
+		dec.Decode(i)
+		return fmt.Sprintf("Hey %s... %s", user, i.Insult)
+	case 2:
+		return fmt.Sprintf("%s is a %s %s %s", user, it1[rand.Intn(len(it1))], it2[rand.Intn(len(it2))], it3[rand.Intn(len(it3))])
 	}
-	return fmt.Sprintf("... derp, excuse me I have a bug: %s",n)
+	return fmt.Sprintf("... derp, excuse me I have a bug: %s", n)
 }
 
-func makeLove(user string) string{
-	love:=[]string{
+func makeLove(user string) string {
+	love := []string{
 		`You deserve a promotion.`,
 		`I appreciate all of your opinions.`,
 		`I like your style.`,
@@ -275,5 +275,5 @@ func makeLove(user string) string{
 		`I would hold the elevator doors open for you if they were closing.`,
 		`You make me want to frolic in a field.`,
 	}
-	return fmt.Sprintf("Hey %s, %s",user, love[rand.Intn(len(love))])
+	return fmt.Sprintf("Hey %s, %s", user, love[rand.Intn(len(love))])
 }

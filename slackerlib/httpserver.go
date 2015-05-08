@@ -1,11 +1,11 @@
 package slackerlib
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
 )
 
-func(bot *Sbot)StartHttp(){
+func (bot *Sbot) StartHttp() {
 	http.HandleFunc("/", httpHi)
 	err := http.ListenAndServe(":"+bot.Config.Port, nil)
 	if err != nil {

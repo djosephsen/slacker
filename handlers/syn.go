@@ -2,18 +2,18 @@ package handlers
 
 import (
 	sl "github.com/djosephsen/slacker/slackerlib"
-	"time"
 	"math/rand"
+	"time"
 )
 
 var Syn = sl.MessageHandler{
-	Name: `Syn`,
-	Usage:`listen for '<botname> (syn|ping)', respond accordingly`,
-	Method: `RESPOND`,
+	Name:    `Syn`,
+	Usage:   `listen for '<botname> (syn|ping)', respond accordingly`,
+	Method:  `RESPOND`,
 	Pattern: `(?i)(syn|ping)`,
-	Run:	func(e *sl.Event, match []string){
-	 	now:=time.Now()
-	   rand.Seed(int64(now.Unix()))
+	Run: func(e *sl.Event, match []string) {
+		now := time.Now()
+		rand.Seed(int64(now.Unix()))
 		replies := []string{
 			"yeah um.. pong?",
 			"WHAT?! jeeze.",
@@ -26,6 +26,6 @@ var Syn = sl.MessageHandler{
 			"yup. still here.",
 			"super busy just now.. Can I get back to you in like 5min?",
 		}
-		e.Reply(replies[rand.Intn(len(replies)-1)])	
+		e.Reply(replies[rand.Intn(len(replies)-1)])
 	},
 }
