@@ -1,5 +1,33 @@
 # Slacker 
-## A neck-beardy chatops bot for the discriminating Ops professional
+## Slacker is abandoned; check out [lazlo](http://github.com/djosephsen/lazlo) instead!
+
+Slacker taught me a lot about writing chatops automation, and what sort of
+framework I wanted to accomplish that work. TLDR: a chatbot is great front-end
+UI, but on the back-end I want something more like an event-broker.
+
+Here are some things Slacker did right: 
+
+* Slacker was very easy to configure and get up and running
+* [12-factor](12factor.net/) clean, so it works well with PaaS and etc..
+* It was well integrated with slack (arguably a mark against it)
+* It was more flexible than the tradional IRC bot listen/respond pattern
+
+[Lazlo](http://github.com/djosephsen/lazlo) Carries over all of those things,
+but dispenses with the concept of a plugin as a single-purpose bit of code that
+uses one Handler-type to do one thing. 
+
+In Lazlo, plug-ins work pretty much just like singl-file go programs. They
+execute in their own goroutine in parallel and can interact with Lazlo as a
+broker to be notified of the events they want as they want them. Slacker
+plugins required you to reason about Slacker's framework to accomplish your
+goal, whereas Lazlo plugins act and feel much more like stand-alone entities
+that are augmented by events that Lazlo can provide. 
+
+Apologies if you invested some of your time and effort to get started working
+with slacker, you are, of course free to fork away, but I hope you'll join
+Lazlo and I instead. 
+
+## Original Slacker Documentation below here:
 
 Written in Go for SlackHQ (using the RTM API), Slacker provides features that
 make it easy to model and abstract many different types of interaction between
@@ -75,8 +103,8 @@ go get github.com/kr/godep
 
 5 through like 27:  
 ```
-mkdir -p $GOPATH/src/github.com/<yourgithubname>
-cd $GOPATH/src/github.com/<yourgithubname>
+mkdir -p $GOPATH/github.com/<yourgithubname>
+cd $GOPATH/github.com/<yourgithubname>
 git clone git@github.com:<yourgithubname>/slacker.git
 cd slacker
 git remote add upstream https://github.com/djosephsen/slacker.git
@@ -109,7 +137,7 @@ git push && get push heroku
 ## What now?
 Find out [what slacker can do](docs/builtins.md) out of the box
 Get started [adding, removing, and creating plugins](docs/plugins.md)
-Learn more about [configuring](docs/configs.md) Slacker (there's not much to it)
+Learn more about [configuring](docs/configuration.md) Slacker (there's not much to it)
 
 ## Why Slacker? 
 
